@@ -1,16 +1,59 @@
+:root {
+  --font-size-xl: 7.5rem;
+  --font-size-l: 5.625rem;
+  --font-size-m: 3.5rem;
+  --font-size-s: 1.5rem;
+  --font-size-xs: 1.25rem;
+
+  --bg-color: #000000;
+  --font-color: #ffffff;
+  --light-50-color: rgba(255, 255, 255, 0.5);
+  --light-10-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] {
+  --bg-color: #ffffff;
+  --font-color: #000000;
+  --light-50-color: rgba(0, 0, 0, 0.5);
+  --light-10-color: rgba(0, 0, 0, 0.1);
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Inter;
+  font-weight: 700;
+  background-color: var(--bg-color);
+  color: var(--font-color);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+button {
+  font-family: Inter;
+  font-weight: 700;
 }
 
-* {
-  box-sizing: border-box;
+.pagePadding {
+  padding-left: 7rem;
+  padding-right: 7rem;
+}
+
+.text-size-xl {
+  font-size: 7.5rem;
+}
+
+.text-size-l {
+  font-size: 5.625rem;
+}
+
+.text-size-m {
+  font-size: 3.5rem;
+}
+
+.text-size-s {
+  font-size: 1.5rem;
+}
+
+.text-size-xs {
+  font-size: 1.25rem;
 }
