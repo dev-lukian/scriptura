@@ -1,7 +1,6 @@
 .container {
   max-width: 90rem;
   margin: auto;
-  position: relative;
 }
 
 .settingsHover {
@@ -23,6 +22,7 @@
 }
 
 .settingsHover:hover .settingsTextWrapper {
+  margin-right: 0;
   transform: translateX(-1rem);
 }
 
@@ -32,7 +32,7 @@
 
 .settingsTextWrapper {
   display: flex;
-  transition: 0.5s;
+  transition: 0.5s all;
 }
 
 .rightArrow {
@@ -64,6 +64,10 @@
   opacity: 0.5;
 }
 
+.settingsTextHide {
+  margin-right: -5rem;
+}
+
 .settingsWrapper {
   position: fixed;
   display: flex;
@@ -77,15 +81,7 @@
   z-index: 5;
   padding-right: 1rem;
   margin-right: -11rem;
-  transition: 0.5s;
-}
-
-.closeButton {
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  column-gap: 0.5rem;
+  transition: 0.5s all;
 }
 
 .settingsAppear {
@@ -189,6 +185,7 @@
 .passageSection {
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
+  overflow: hidden;
 }
 
 .passageSection::-webkit-scrollbar {
@@ -227,7 +224,7 @@
   border-color: var(--light-50-color);
   background-color: transparent;
   color: var(--font-color);
-  transition: background-color 0.3s;
+  transition: 0.3s all;
   cursor: pointer;
 }
 
@@ -239,6 +236,12 @@
   border-radius: 100%;
   width: 11rem;
   height: 11rem;
+}
+
+.shareButton:hover {
+  background-color: var(--font-color);
+  border-color: var(--font-color);
+  color: var(--bg-color);
 }
 
 @media screen and (max-width: 479px) {

@@ -1,18 +1,53 @@
 .normalWrapper {
-  padding-top: 35vh;
-  padding-bottom: 35vh;
+  overflow: auto;
   display: flex;
   flex-direction: column;
-  row-gap: 3rem;
+  scroll-snap-type: y proximity;
+  padding: 50vh 7rem 50vh 7rem;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+.normalWrapper::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 .verse {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
   margin-bottom: 0;
   margin-top: 0;
   transition: opacity 0.1s;
-  scroll-snap-align: start;
   font-size: 3.9vw;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  max-width: 1440px;
+  margin: auto;
 }
+
+.moveArrow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  height: 5rem;
+  border-radius: 0;
+}
+
+.topArrow {
+  top: 0;
+}
+
+.bottomArrow {
+  bottom: 0;
+  transform: rotateZ(180deg);
+}
+
+/* .scrollBuffer {
+  min-height: 20rem;
+  background-color: white;
+  width: 100%;
+} */
 
 @media screen and (min-width: 1440px) {
   .verse {
@@ -39,7 +74,6 @@
   background-color: transparent;
   border: none;
   padding: 0.4rem 1rem;
-  border-radius: 5rem;
   transition: background-color 0.3s, color 0.3s;
   cursor: pointer;
 }
@@ -50,6 +84,10 @@
   justify-content: center;
   column-gap: 0.5rem;
   color: var(--light-50-color);
+}
+
+.round {
+  border-radius: 5rem;
 }
 
 .button:hover {

@@ -5,15 +5,30 @@ import cn from "classnames";
 import { useInView } from "react-intersection-observer";
 
 import demoScripture from "./test.txt";
+import TopArrow from "../../../public/top-arrow.svg";
 import ArrowBack from "../../../public/fusion-back.svg";
 import ArrowForward from "../../../public/fusion-forward.svg";
 
-const BiblePassage = ({ scrollProgress, method }) => {
+const BiblePassage = ({ method }) => {
   const [normalPassage, setNormalPassage] = useState();
   const [fusionPassage, setFusionPassage] = useState();
   const [fusionPlay, setFusionPlay] = useState(false);
   const [fusionProgress, setFusionProgress] = useState(0);
+  const [fusionSpeed, setFusionSpeed] = useState(400);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const refContainer = useRef();
   const timer = useRef();
+
+  const onScroll = () => {
+    if (refContainer.current) {
+      const { scrollTop, scrollHeight, clientHeight } = refContainer.current;
+      console.log(scrollTop, scrollHeight - clientHeight, clientHeight);
+      const percentY = scrollTop / (scrollHeight - clientHeight);
+      const progress = Math.min(Math.floor(percentY * 17), 16);
+      console.log(progress);
+      setScrollProgress(progress);
+    }
+  };
 
   const opacityForVerses = (sectionProgress, verseNum) => {
     const progress = sectionProgress - verseNum;
@@ -23,7 +38,6 @@ const BiblePassage = ({ scrollProgress, method }) => {
 
   const toggleResume = () => {
     setFusionPlay(!fusionPlay);
-    console.log(fusionPlay);
   };
 
   const skipWords = (forward) => {
@@ -41,13 +55,13 @@ const BiblePassage = ({ scrollProgress, method }) => {
       if (fusionProgress < fusionPassage.length - 1) {
         timer.current = setInterval(() => {
           setFusionProgress((fusionProgress) => fusionProgress + 1);
-        }, 450);
+        }, fusionSpeed);
       }
     } else {
       clearInterval(timer.current);
     }
     return () => clearInterval(timer.current);
-  }, [fusionPlay]);
+  }, [fusionPlay, fusionSpeed]);
 
   useEffect(() => {
     if (fusionPassage) {
@@ -97,7 +111,38 @@ const BiblePassage = ({ scrollProgress, method }) => {
     <>
       {method == "normal"
         ? normalPassage && (
-            <div className={styles.normalWrapper}>
+            <div
+              ref={refContainer}
+              onScroll={onScroll}
+              id="normalWrapper"
+              className={styles.normalWrapper}
+            >
+              {scrollProgress == 0 && (
+                <div
+                  className={cn(
+                    styles.moveArrow,
+                    styles.topArrow,
+                    styles.button,
+                    styles.lightButton
+                  )}
+                  onClick={() => fullpage_api.moveSectionUp()}
+                >
+                  <TopArrow />
+                </div>
+              )}
+              {scrollProgress == normalPassage.length - 1 && (
+                <div
+                  className={cn(
+                    styles.moveArrow,
+                    styles.bottomArrow,
+                    styles.button,
+                    styles.lightButton
+                  )}
+                  onClick={() => fullpage_api.moveSectionDown()}
+                >
+                  <TopArrow />
+                </div>
+              )}
               {normalPassage.map((verse, idx) => {
                 return (
                   <p
@@ -109,6 +154,7 @@ const BiblePassage = ({ scrollProgress, method }) => {
                   </p>
                 );
               })}
+              {/* <div className={styles.scrollBuffer}>hi</div> */}
             </div>
           )
         : fusionPassage && (
@@ -121,6 +167,7 @@ const BiblePassage = ({ scrollProgress, method }) => {
                   className={cn(
                     styles.button,
                     styles.lightButton,
+                    styles.round,
                     "text-size-s"
                   )}
                   onClick={() => skipWords(false)}
@@ -129,7 +176,7 @@ const BiblePassage = ({ scrollProgress, method }) => {
                   10
                 </button>
                 <button
-                  className={cn(styles.button, "text-size-s")}
+                  className={cn(styles.button, styles.round, "text-size-s")}
                   onClick={toggleResume}
                 >
                   {fusionPlay ? "Pause" : "Resume"}
@@ -138,12 +185,48 @@ const BiblePassage = ({ scrollProgress, method }) => {
                   className={cn(
                     styles.button,
                     styles.lightButton,
+                    styles.round,
                     "text-size-s"
                   )}
                   onClick={() => skipWords(true)}
                 >
                   10
                   <ArrowForward />
+                </button>
+              </div>
+              <div className={cn(styles.fusionButtonsWrapper, "text-size-s")}>
+                <button
+                  className={cn(
+                    styles.button,
+                    styles.lightButton,
+                    styles.round,
+                    "text-size-s"
+                  )}
+                  onClick={() => setFusionSpeed(200)}
+                >
+                  200 ms
+                </button>
+                <button
+                  className={cn(
+                    styles.button,
+                    styles.lightButton,
+                    styles.round,
+                    "text-size-s"
+                  )}
+                  onClick={() => setFusionSpeed(300)}
+                >
+                  300 ms
+                </button>
+                <button
+                  className={cn(
+                    styles.button,
+                    styles.lightButton,
+                    styles.round,
+                    "text-size-s"
+                  )}
+                  onClick={() => setFusionSpeed(400)}
+                >
+                  400 ms
                 </button>
               </div>
             </div>
