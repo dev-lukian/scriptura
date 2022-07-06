@@ -214,7 +214,7 @@ const Home = () => {
                         <Logo className={styles.lightwayLogo} />
                       </div>
                       <div className={styles.studyTitleWrapper}>
-                        <div className="text-size-s">Todays Study</div>
+                        <div className="text-size-s">Test</div>
                         <div className="text-size-xl">{dailyPassage[0].title.stringValue}</div>
                       </div>
                       <div className={styles.scrollDownWrapper}>
