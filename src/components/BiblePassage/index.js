@@ -6,6 +6,7 @@ import cn from 'classnames';
 import scrollIntoView from 'scroll-into-view';
 import _ from 'lodash';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useSwipeable } from 'react-swipeable';
 
 // Assets
 import ArrowBack from '../../../public/fusion-back.svg';
@@ -36,19 +37,30 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   const [fusionSpeed, setFusionSpeed] = useState(200);
   const timer = useRef();
 
+  const swipeable = useSwipeable({
+    onSwipedUp: () => scrollDown(),
+    onSwipedDown: () => scrollUp(),
+  });
+
+  const scrollUp = () => {
+    scrollIntoView(versesWithBuffer.current[activeVerse - 1], scrollOptions.current);
+    setActiveVerse(--activeVerse);
+  };
+
+  const scrollDown = () => {
+    scrollIntoView(versesWithBuffer.current[activeVerse + 1], scrollOptions.current);
+    setActiveVerse(++activeVerse);
+  };
+
   // Snap scroll to verse
   const verseScroll = (event) => {
     console.log(event);
     if (!scroll.current) {
       scroll.current = true;
       if (event.deltaY < 0 && activeVerse > 0) {
-        console.log('scroll up');
-        scrollIntoView(versesWithBuffer.current[activeVerse - 1], scrollOptions.current);
-        setActiveVerse(--activeVerse);
+        scrollUp();
       } else if (event.deltaY > 0 && activeVerse < versesWithBuffer.current.length - 1) {
-        console.log('scroll down');
-        scrollIntoView(versesWithBuffer.current[activeVerse + 1], scrollOptions.current);
-        setActiveVerse(++activeVerse);
+        scrollDown();
       }
       setTimeout(() => (scroll.current = false), 200);
     }
@@ -161,7 +173,11 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
     <>
       {method == 'normal'
         ? normalPassage && (
-            <div id="normalWrapper" className={cn(styles.normalWrapper, 'page-padding')}>
+            <div
+              {...swipeable}
+              id="normalWrapper"
+              className={cn(styles.normalWrapper, 'page-padding')}
+            >
               <div ref={scrollUpBuffer}></div>
               {normalPassage.map((verse, index) => {
                 return (
