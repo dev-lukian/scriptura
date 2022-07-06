@@ -37,7 +37,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   const [fusionSpeed, setFusionSpeed] = useState(200);
   const timer = useRef();
 
-  const swipeable = useSwipeable({
+  const { ref } = useSwipeable({
     onSwipedUp: () => scrollDown(),
     onSwipedDown: () => scrollUp(),
   });
@@ -165,6 +165,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
 
   // Add/remove scroll event listener when entering/leaving normal reading section
   useEffect(() => {
+    ref(window);
     if (!allowFullPageScrolling) window.addEventListener('wheel', debounceVerseScroll);
     else window.removeEventListener('wheel', debounceVerseScroll);
   }, [allowFullPageScrolling]);
@@ -173,11 +174,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
     <>
       {method == 'normal'
         ? normalPassage && (
-            <div
-              {...swipeable}
-              id="normalWrapper"
-              className={cn(styles.normalWrapper, 'page-padding')}
-            >
+            <div id="normalWrapper" className={cn(styles.normalWrapper, 'page-padding')}>
               <div ref={scrollUpBuffer}></div>
               {normalPassage.map((verse, index) => {
                 return (
