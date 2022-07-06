@@ -9,7 +9,7 @@
   justify-content: flex-end;
   position: fixed;
   height: 100vh;
-  width: 6rem;
+  width: 3rem;
   left: auto;
   right: 0%;
   padding-right: 1rem;
@@ -32,33 +32,17 @@
 
 .settingsTextWrapper {
   display: flex;
+  align-items: center;
+  justify-content: center;
   transition: 0.5s all;
-}
-
-.rightArrow {
-  flex: 0 0 auto;
 }
 
 .settingsText {
   transform: rotate(-90deg);
-
-  /* Legacy vendor prefixes that you probably don't need... */
-
-  /* Safari */
   -webkit-transform: rotate(-90deg);
-
-  /* Firefox */
   -moz-transform: rotate(-90deg);
-
-  /* IE */
   -ms-transform: rotate(-90deg);
-
-  /* Opera */
   -o-transform: rotate(-90deg);
-
-  /* Internet Explorer */
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-
   margin-right: -0.5rem;
   color: var(--font-color);
   opacity: 0.5;
@@ -149,14 +133,20 @@
   background-color: white;
 }
 
-.studyIntro {
+.introWrapper {
   height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+}
+
+.studyTitleWrapper {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .scrollDownWrapper {
@@ -193,8 +183,11 @@
 }
 
 .questionWrapper {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .shareWrapper {
@@ -203,36 +196,28 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
 }
 
 .shareMiddle {
   display: flex;
   flex-direction: column;
   align-items: center;
+  row-gap: 3rem;
 }
 
-.shareLinksWrapper {
-  margin-top: 3rem;
-  display: flex;
-  column-gap: 3.5rem;
+.shareButtonsWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 3.5rem;
 }
 
-.button {
+.shareButton {
   border: 2px solid;
   border-color: var(--light-50-color);
   background-color: transparent;
   color: var(--font-color);
   transition: 0.3s all;
   cursor: pointer;
-}
-
-.button:hover {
-  background-color: var(--light-10-color);
-}
-
-.shareButton {
   border-radius: 100%;
   width: 11rem;
   height: 11rem;
@@ -244,7 +229,106 @@
   color: var(--bg-color);
 }
 
-@media screen and (max-width: 479px) {
+.shareIcon {
+  transform: scale(1);
+}
+
+/* 
+Responsive Breakpoints
+>    1440 px : Large Desktop
+1440 - 991 px: Desktop
+991  - 767 px: Tablet
+767  - 478 px: Mobile Horizontal
+<    478 px  : Mobile Vertical
+*/
+
+/* Tablet */
+@media only screen and (max-width: 991px) {
+  .lightwayLogo {
+    transform: scale(0.9);
+  }
+
+  .scrollDown {
+    width: 1.5rem;
+  }
+
+  .shareButtonsWrapper {
+    grid-gap: 2rem;
+  }
+
+  .shareButton {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .shareIcon {
+    transform: scale(0.9);
+  }
+}
+
+/* Mobile Horizontal */
+@media only screen and (max-width: 767px) {
+  .scrollDown {
+    width: 1.25rem;
+  }
+
+  .shareButtonsWrapper {
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+  }
+
+  .settingsHover {
+    height: 5rem;
+    width: 4rem;
+    padding-right: 0rem;
+    justify-content: center;
+  }
+
+  .rightArrow {
+    transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+  }
+
+  .settingsText {
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    margin-right: 0rem;
+    margin-top: 0.5rem;
+  }
+
+  .settingsTextWrapper {
+    flex-direction: column-reverse;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+  }
+  /*hi*/
+  .settingsHover:hover .settingsTextWrapper {
+    margin-top: 0%;
+    transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+    -webkit-transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+    -moz-transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+    -ms-transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+    -o-transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+  }
+
+  .settingsHover:hover ~ .settingsWrapper {
+    transform: none;
+  }
+
+  .settingsTextHide {
+    margin-right: -6rem;
+    margin-top: -6rem;
+  }
+
   .settingsWrapper {
     right: 0%;
     left: 0%;
@@ -255,14 +339,17 @@
     display: none;
     opacity: 0%;
   }
+
   .settingsAppear {
     transform: none;
     display: flex;
     opacity: 100%;
   }
+
   .settingOptionsWrapper {
     flex-direction: row;
   }
+
   .settingOptionTop {
     border-bottom: 0px solid black;
     border-right: 1px solid black;
@@ -271,5 +358,25 @@
   .settingOptionBottom {
     border-top: 0px solid black;
     border-left: 1px solid black;
+  }
+}
+
+/* Mobile Vertical */
+@media only screen and (max-width: 478px) {
+  .lightwayLogo {
+    transform: scale(0.72);
+  }
+
+  .scrollDown {
+    width: 1rem;
+  }
+
+  .shareButton {
+    width: 8rem;
+    height: 8rem;
+  }
+
+  .shareIcon {
+    transform: scale(0.72);
   }
 }

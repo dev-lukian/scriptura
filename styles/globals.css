@@ -1,21 +1,15 @@
 :root {
-  --font-size-xl: 7.5rem;
-  --font-size-l: 5.625rem;
-  --font-size-m: 3.5rem;
-  --font-size-s: 1.5rem;
-  --font-size-xs: 1.25rem;
-
   --bg-color: #000000;
-  --font-color: #ffffff;
-  --light-50-color: rgba(255, 255, 255, 0.5);
-  --light-10-color: rgba(255, 255, 255, 0.1);
+  --font-color: #dde3ea;
+  --light-50-color: #6f7175;
+  --light-10-color: #161717;
 }
 
-[data-theme="light"] {
+[data-theme='light'] {
   --bg-color: #ffffff;
   --font-color: #000000;
-  --light-50-color: rgba(0, 0, 0, 0.5);
-  --light-10-color: rgba(0, 0, 0, 0.1);
+  --light-50-color: #808080;
+  --light-10-color: #e5e5e5;
 }
 
 html,
@@ -33,13 +27,12 @@ button {
   font-weight: 700;
 }
 
-.pagePadding {
-  padding-left: 7rem;
-  padding-right: 7rem;
+.page-padding {
+  padding: 3rem 7rem;
 }
 
 .text-size-xl {
-  font-size: 7.5rem;
+  font-size: 6.5rem;
 }
 
 .text-size-l {
@@ -58,6 +51,10 @@ button {
   font-size: 1.25rem;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .button {
   color: var(--font-color);
   background-color: transparent;
@@ -71,7 +68,7 @@ button {
   cursor: pointer;
 }
 
-.lightButton {
+.light-button {
   color: var(--light-50-color);
 }
 
@@ -82,4 +79,94 @@ button {
 .button:hover {
   background-color: var(--light-10-color);
   color: var(--font-color);
+}
+
+/* 
+Responsive Breakpoints
+>    1440 px : Large Desktop
+1440 - 991 px: Desktop
+991  - 767 px: Tablet
+767  - 478 px: Mobile Horizontal
+<    478 px  : Mobile Vertical
+*/
+
+/* Tablet */
+@media only screen and (max-width: 991px) {
+  .page-padding {
+    padding: 2rem 4rem;
+  }
+
+  .text-size-xl {
+    font-size: 5.2rem;
+  }
+
+  .text-size-l {
+    font-size: 4.5rem;
+  }
+
+  .text-size-m {
+    font-size: 2.8rem;
+  }
+
+  .text-size-s {
+    font-size: 1.2rem;
+  }
+
+  .text-size-xs {
+    font-size: 1rem;
+  }
+}
+
+/* Mobile Horizontal */
+@media only screen and (max-width: 767px) {
+  .page-padding {
+    padding: 1rem 3rem;
+  }
+
+  .text-size-xl {
+    font-size: 4.2rem;
+  }
+
+  .text-size-l {
+    font-size: 3.6rem;
+  }
+
+  .text-size-m {
+    font-size: 2rem;
+  }
+
+  .text-size-s {
+    font-size: 1rem;
+  }
+
+  .text-size-xs {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Vertical */
+@media only screen and (max-width: 478px) {
+  .page-padding {
+    padding: 1rem 2rem;
+  }
+
+  .text-size-xl {
+    font-size: 3.3rem;
+  }
+
+  .text-size-l {
+    font-size: 2.9rem;
+  }
+
+  .text-size-m {
+    font-size: 1.4rem;
+  }
+
+  .text-size-s {
+    font-size: 0.8rem;
+  }
+
+  .text-size-xs {
+    font-size: 0.7rem;
+  }
 }

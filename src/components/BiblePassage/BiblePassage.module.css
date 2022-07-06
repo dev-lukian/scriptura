@@ -1,9 +1,10 @@
 .normalWrapper {
-  overflow: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
-  scroll-snap-type: y proximity;
-  padding: 50vh 7rem 50vh 7rem;
+  padding-top: 50vh;
+  padding-bottom: 50vh;
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
 }
@@ -15,44 +16,18 @@
 .verse {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
-  margin-bottom: 0;
-  margin-top: 0;
+  opacity: 0.3;
   transition: opacity 0.1s;
-  font-size: 3.9vw;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
   max-width: 1440px;
   margin: auto;
+  cursor: default;
+  pointer-events: none;
 }
 
-.moveArrow {
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  height: 5rem;
-  border-radius: 0;
-}
-
-.topArrow {
-  top: 0;
-}
-
-.bottomArrow {
-  bottom: 0;
-  transform: rotateZ(180deg);
-}
-
-/* .scrollBuffer {
-  min-height: 20rem;
-  background-color: white;
-  width: 100%;
-} */
-
-@media screen and (min-width: 1440px) {
-  .verse {
-    font-size: 56px;
-  }
+.activeVerse {
+  cursor: pointer;
+  opacity: 1;
+  pointer-events: all;
 }
 
 .fusionWrapper {
@@ -69,28 +44,33 @@
   column-gap: 5rem;
 }
 
-.button {
-  color: var(--font-color);
-  background-color: transparent;
-  border: none;
-  padding: 0.4rem 1rem;
-  transition: background-color 0.3s, color 0.3s;
-  cursor: pointer;
+/* 
+Responsive Breakpoints
+>    1440 px : Large Desktop
+1440 - 991 px: Desktop
+991  - 767 px: Tablet
+767  - 478 px: Mobile Horizontal
+<    478 px  : Mobile Vertical
+*/
+
+/* Tablet */
+@media only screen and (max-width: 991px) {
 }
 
-.lightButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  column-gap: 0.5rem;
-  color: var(--light-50-color);
+/* Mobile Horizontal */
+@media only screen and (max-width: 767px) {
+  .fusionButtonsWrapper {
+    width: 100%;
+    column-gap: 0rem;
+    justify-content: space-between;
+  }
+
+  .verse {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
 }
 
-.round {
-  border-radius: 5rem;
-}
-
-.button:hover {
-  background-color: var(--light-10-color);
-  color: var(--font-color);
+/* Mobile Vertical */
+@media only screen and (max-width: 478px) {
 }

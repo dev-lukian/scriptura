@@ -1,45 +1,74 @@
-import { useEffect, useState, useRef } from "react";
-import styles from "./BiblePassage.module.css";
+// NextJS/React
+import { useEffect, useState, useRef, useCallback } from 'react';
 
-import cn from "classnames";
-import { useInView } from "react-intersection-observer";
+// NPM Modules
+import cn from 'classnames';
+import scrollIntoView from 'scroll-into-view';
+import _ from 'lodash';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import demoScripture from "./test.txt";
-import TopArrow from "../../../public/top-arrow.svg";
-import ArrowBack from "../../../public/fusion-back.svg";
-import ArrowForward from "../../../public/fusion-forward.svg";
+// Assets
+import ArrowBack from '../../../public/fusion-back.svg';
+import ArrowForward from '../../../public/fusion-forward.svg';
 
-const BiblePassage = ({ method }) => {
+// Styles
+import styles from './BiblePassage.module.css';
+
+const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
+  // Normal
   const [normalPassage, setNormalPassage] = useState();
+  const [activeVerse, setActiveVerse] = useState(0);
+  const scrollUpBuffer = useRef();
+  const scrollDownBuffer = useRef();
+  const versesWithBuffer = useRef(new Array());
+  const scroll = useRef(false);
+  const scrollOptions = useRef({
+    time: 0,
+    ease: (value) => {
+      return 1 - Math.pow(1 - value, 4);
+    },
+  });
+
+  //Fusion
   const [fusionPassage, setFusionPassage] = useState();
   const [fusionPlay, setFusionPlay] = useState(false);
   const [fusionProgress, setFusionProgress] = useState(0);
-  const [fusionSpeed, setFusionSpeed] = useState(400);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const refContainer = useRef();
+  const [fusionSpeed, setFusionSpeed] = useState(200);
   const timer = useRef();
 
-  const onScroll = () => {
-    if (refContainer.current) {
-      const { scrollTop, scrollHeight, clientHeight } = refContainer.current;
-      console.log(scrollTop, scrollHeight - clientHeight, clientHeight);
-      const percentY = scrollTop / (scrollHeight - clientHeight);
-      const progress = Math.min(Math.floor(percentY * 17), 16);
-      console.log(progress);
-      setScrollProgress(progress);
+  // Snap scroll to verse
+  const verseScroll = (event) => {
+    console.log(event);
+    if (!scroll.current) {
+      scroll.current = true;
+      if (event.deltaY < 0 && activeVerse > 0) {
+        console.log('scroll up');
+        scrollIntoView(versesWithBuffer.current[activeVerse - 1], scrollOptions.current);
+        setActiveVerse(--activeVerse);
+      } else if (event.deltaY > 0 && activeVerse < versesWithBuffer.current.length - 1) {
+        console.log('scroll down');
+        scrollIntoView(versesWithBuffer.current[activeVerse + 1], scrollOptions.current);
+        setActiveVerse(++activeVerse);
+      }
+      setTimeout(() => (scroll.current = false), 200);
     }
   };
 
-  const opacityForVerses = (sectionProgress, verseNum) => {
-    const progress = sectionProgress - verseNum;
-    if (progress >= 0 && progress < 1) return 1;
-    return 0.3;
-  };
+  const debounceVerseScroll = useCallback(
+    _.debounce(verseScroll, 35, {
+      leading: true,
+      trailing: false,
+    }),
+    []
+  );
 
   const toggleResume = () => {
     setFusionPlay(!fusionPlay);
   };
 
+  // forward: boolean
+  // If true, move 10 forward
+  // If false, move 10 back
   const skipWords = (forward) => {
     if (forward) {
       setFusionProgress((fusionProgress) =>
@@ -50,6 +79,7 @@ const BiblePassage = ({ method }) => {
     }
   };
 
+  // Start fusion player
   useEffect(() => {
     if (fusionPlay) {
       if (fusionProgress < fusionPassage.length - 1) {
@@ -63,6 +93,7 @@ const BiblePassage = ({ method }) => {
     return () => clearInterval(timer.current);
   }, [fusionPlay, fusionSpeed]);
 
+  // Stop fusion player once it gets to the last word
   useEffect(() => {
     if (fusionPassage) {
       if (fusionProgress == fusionPassage.length - 1) {
@@ -75,14 +106,20 @@ const BiblePassage = ({ method }) => {
   // Preparing normal method
   useEffect(() => {
     // Turning each line into its on element in an array
-    const splitVerses = demoScripture.split("\n");
-    let indexOfSpace;
+    const splitVerses = passage.split('\\n');
+
+    // Remove space, if present in beginning of verse
+    for (let i = 0; i < splitVerses.length; i++) {
+      if (splitVerses[i].charAt(0) == ' ') {
+        splitVerses[i] = splitVerses[i].substring(1);
+      }
+    }
 
     // Removing verse numbers
-    for (let i = 0; i < splitVerses.length; i++) {
-      indexOfSpace = splitVerses[i].indexOf(" ");
-      splitVerses[i] = splitVerses[i].substring(indexOfSpace + 1);
-    }
+    // for (let i = 0; i < splitVerses.length; i++) {
+    //   indexOfSpace = splitVerses[i].indexOf(" ");
+    //   splitVerses[i] = splitVerses[i].substring(indexOfSpace + 1);
+    // }
 
     setNormalPassage(splitVerses);
   }, []);
@@ -90,143 +127,101 @@ const BiblePassage = ({ method }) => {
   // Preparing fusion method (each word pushed into an array)
   useEffect(() => {
     fullpage_api.reBuild();
+
     if (normalPassage) {
       let fusion = [];
       let splitWords;
 
       for (let i = 0; i < normalPassage.length; i++) {
-        splitWords = normalPassage[i].split(" ");
+        splitWords = normalPassage[i].split(' ');
         fusion = [...fusion, ...splitWords];
       }
 
       setFusionPassage(fusion);
     }
+
+    // Assigning buffers to first and last index of versesWithBuffer array
+    versesWithBuffer.current[0] = scrollUpBuffer.current;
+    versesWithBuffer.current[versesWithBuffer.current.length] = scrollDownBuffer.current;
   }, [normalPassage]);
 
+  // One buffer is scrolled to, move up or down a section
   useEffect(() => {
-    fullpage_api.reBuild();
-  }, [method]);
+    if (activeVerse == versesWithBuffer.current.length - 1) fullpage_api.moveSectionDown();
+    if (activeVerse == 0) fullpage_api.moveSectionUp();
+  }, [activeVerse]);
+
+  // Add/remove scroll event listener when entering/leaving normal reading section
+  useEffect(() => {
+    if (!allowFullPageScrolling) window.addEventListener('wheel', debounceVerseScroll);
+    else window.removeEventListener('wheel', debounceVerseScroll);
+  }, [allowFullPageScrolling]);
 
   return (
     <>
-      {method == "normal"
+      {method == 'normal'
         ? normalPassage && (
-            <div
-              ref={refContainer}
-              onScroll={onScroll}
-              id="normalWrapper"
-              className={styles.normalWrapper}
-            >
-              {scrollProgress == 0 && (
-                <div
-                  className={cn(
-                    styles.moveArrow,
-                    styles.topArrow,
-                    styles.button,
-                    styles.lightButton
-                  )}
-                  onClick={() => fullpage_api.moveSectionUp()}
-                >
-                  <TopArrow />
-                </div>
-              )}
-              {scrollProgress == normalPassage.length - 1 && (
-                <div
-                  className={cn(
-                    styles.moveArrow,
-                    styles.bottomArrow,
-                    styles.button,
-                    styles.lightButton
-                  )}
-                  onClick={() => fullpage_api.moveSectionDown()}
-                >
-                  <TopArrow />
-                </div>
-              )}
-              {normalPassage.map((verse, idx) => {
+            <div id="normalWrapper" className={cn(styles.normalWrapper, 'page-padding')}>
+              <div ref={scrollUpBuffer}></div>
+              {normalPassage.map((verse, index) => {
                 return (
-                  <p
-                    className={cn("text-size-m", styles.verse)}
-                    style={{ opacity: opacityForVerses(scrollProgress, idx) }}
-                    key={idx}
-                  >
-                    {verse}
-                  </p>
+                  <CopyToClipboard text={normalPassage[index]} key={index} onCopy={onCopy}>
+                    <p
+                      className={cn(
+                        'text-size-m',
+                        styles.verse,
+                        activeVerse - 1 == index && styles.activeVerse
+                      )}
+                      ref={(verse) => (versesWithBuffer.current[index + 1] = verse)}
+                    >
+                      {verse}
+                    </p>
+                  </CopyToClipboard>
                 );
               })}
-              {/* <div className={styles.scrollBuffer}>hi</div> */}
+              <div ref={scrollDownBuffer}></div>
             </div>
           )
         : fusionPassage && (
             <div className={styles.fusionWrapper}>
-              <div className="text-size-xl">
-                {fusionPassage[fusionProgress]}
-              </div>
-              <div className={cn(styles.fusionButtonsWrapper, "text-size-s")}>
+              <div className="text-size-xl">{fusionPassage[fusionProgress]}</div>
+              <div className={cn(styles.fusionButtonsWrapper, 'text-size-s')}>
                 <button
-                  className={cn(
-                    styles.button,
-                    styles.lightButton,
-                    styles.round,
-                    "text-size-s"
-                  )}
+                  className={cn('button', 'light-button', 'round', 'text-size-s')}
                   onClick={() => skipWords(false)}
                 >
                   <ArrowBack />
                   10
                 </button>
-                <button
-                  className={cn(styles.button, styles.round, "text-size-s")}
-                  onClick={toggleResume}
-                >
-                  {fusionPlay ? "Pause" : "Resume"}
+                <button className={cn('button', 'round', 'text-size-s')} onClick={toggleResume}>
+                  {fusionPlay ? 'Pause' : 'Resume'}
                 </button>
                 <button
-                  className={cn(
-                    styles.button,
-                    styles.lightButton,
-                    styles.round,
-                    "text-size-s"
-                  )}
+                  className={cn('button', 'light-button', 'round', 'text-size-s')}
                   onClick={() => skipWords(true)}
                 >
                   10
                   <ArrowForward />
                 </button>
               </div>
-              <div className={cn(styles.fusionButtonsWrapper, "text-size-s")}>
+              <div className={cn(styles.fusionButtonsWrapper, 'text-size-s')}>
                 <button
-                  className={cn(
-                    styles.button,
-                    styles.lightButton,
-                    styles.round,
-                    "text-size-s"
-                  )}
+                  className={cn('button', 'light-button', 'round', 'text-size-s')}
+                  onClick={() => setFusionSpeed(150)}
+                >
+                  150 ms
+                </button>
+                <button
+                  className={cn('button', 'light-button', 'round', 'text-size-s')}
                   onClick={() => setFusionSpeed(200)}
                 >
                   200 ms
                 </button>
                 <button
-                  className={cn(
-                    styles.button,
-                    styles.lightButton,
-                    styles.round,
-                    "text-size-s"
-                  )}
-                  onClick={() => setFusionSpeed(300)}
+                  className={cn('button', 'light-button', 'round', 'text-size-s')}
+                  onClick={() => setFusionSpeed(250)}
                 >
-                  300 ms
-                </button>
-                <button
-                  className={cn(
-                    styles.button,
-                    styles.lightButton,
-                    styles.round,
-                    "text-size-s"
-                  )}
-                  onClick={() => setFusionSpeed(400)}
-                >
-                  400 ms
+                  250 ms
                 </button>
               </div>
             </div>

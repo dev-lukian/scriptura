@@ -1,0 +1,35 @@
+.copiedAlert {
+  position: fixed;
+  transition: 0.2s ease-in-out all;
+  top: 2.5rem;
+  right: 7rem;
+  margin-top: -20vh;
+  background-color: var(--light-10-color);
+  border-radius: 5rem;
+  padding: 0.4rem 1rem;
+}
+
+.visible {
+  margin-top: 0vh;
+}
+
+/* Tablet */
+@media only screen and (max-width: 991px) {
+  .copiedAlert {
+    top: 1.5rem;
+    right: 4rem;
+  }
+}
+
+/* Mobile Horizontal */
+@media only screen and (max-width: 767px) {
+  .copiedAlert {
+    top: 0.5rem;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+/* Mobile Vertical */
+@media only screen and (max-width: 478px) {
+}

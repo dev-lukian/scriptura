@@ -1,4 +1,3 @@
-import Head from "next/head";
 import "../../styles/globals.css";
 import "../../public/fonts/style.css";
 
