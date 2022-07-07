@@ -7,6 +7,7 @@ import smoothScrollIntoView from 'smooth-scroll-into-view-if-needed';
 import debounce from 'lodash.debounce';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSwipeable } from 'react-swipeable';
+import Bowser from 'bowser';
 
 // Assets
 import ArrowBack from '../../../public/fusion-back.svg';
@@ -23,6 +24,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   const scrollDownBuffer = useRef();
   const versesWithBuffer = useRef(new Array());
   const safari = useRef();
+  const swipe = useRef();
   const scroll = useRef(false);
   const scrollOptions = useRef({
     duration: 0,
@@ -59,7 +61,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   const scrollUp = () => {
     smoothScrollIntoView(
       versesWithBuffer.current[activeVerse - 1],
-      safari.current ? scrollOptionsSafari.current : scrollOptions.current
+      safari.current && !swipe.current ? scrollOptionsSafari.current : scrollOptions.current
     );
     setActiveVerse(--activeVerse);
   };
@@ -67,7 +69,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   const scrollDown = () => {
     smoothScrollIntoView(
       versesWithBuffer.current[activeVerse + 1],
-      safari.current ? scrollOptionsSafari.current : scrollOptions.current
+      safari.current && !swipe.current ? scrollOptionsSafari.current : scrollOptions.current
     );
     setActiveVerse(++activeVerse);
   };
@@ -111,9 +113,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   // If false, move 10 back
   const skipWords = (forward) => {
     if (forward) {
-      setFusionProgress((fusionProgress) =>
-        Math.min(fusionProgress + 10, fusionPassage.length - 1)
-      );
+      setFusionProgress((fusionProgress) => Math.min(fusionProgress + 10, fusionPassage.length - 1));
     } else {
       setFusionProgress((fusionProgress) => Math.max(fusionProgress - 10, 0));
     }
@@ -197,48 +197,36 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
     if (!allowFullPageScrolling)
       window.addEventListener(
         'wheel',
-        safari.current ? debounceVerseScrollSafari : debounceVerseScroll
+        safari.current && !swipe.current ? debounceVerseScrollSafari : debounceVerseScroll
       );
     else
       window.removeEventListener(
         'wheel',
-        safari.current ? debounceVerseScrollSafari : debounceVerseScroll
+        safari.current && !swipe.current ? debounceVerseScrollSafari : debounceVerseScroll
       );
   }, [allowFullPageScrolling]);
 
-  // Detect browser
+  // Detects browser and device type
   useEffect(() => {
-    // Detect Chrome
-    let chromeAgent = navigator.userAgent.indexOf('Chrome') > -1;
+    const browser = Bowser.getParser(window.navigator.userAgent);
+    const browserType = browser.parsedResult.browser.name;
+    const deviceType = browser.parsedResult.platform.type;
 
-    // Detect Safari
-    let safariAgent = navigator.userAgent.indexOf('Safari') > -1;
-
-    // Discard Safari since it also matches Chrome
-    if (chromeAgent && safariAgent) safariAgent = false;
-
-    safariAgent ? (safari.current = true) : (safari.current = false);
+    browserType == 'Safari' ? (safari.current = true) : (safari.current = false);
+    deviceType == 'tablet' || deviceType == 'mobile' ? (swipe.current = true) : (swipe.current = false);
   }, []);
 
   return (
     <>
       {method == 'normal'
         ? normalPassage && (
-            <div
-              // {...handlers}
-              id="normalWrapper"
-              className={cn(styles.normalWrapper, 'page-padding')}
-            >
+            <div id="normalWrapper" className={cn(styles.normalWrapper, 'page-padding')}>
               <div ref={scrollUpBuffer}></div>
               {normalPassage.map((verse, index) => {
                 return (
                   <CopyToClipboard text={normalPassage[index]} key={index} onCopy={onCopy}>
                     <p
-                      className={cn(
-                        'text-size-m',
-                        styles.verse,
-                        activeVerse - 1 == index && styles.activeVerse
-                      )}
+                      className={cn('text-size-m', styles.verse, activeVerse - 1 == index && styles.activeVerse)}
                       ref={(verse) => (versesWithBuffer.current[index + 1] = verse)}
                     >
                       {verse}
