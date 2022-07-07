@@ -3,8 +3,8 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 
 // NPM Modules
 import cn from 'classnames';
-import scrollIntoView from 'scroll-into-view';
-import _ from 'lodash';
+import smoothScrollIntoView from 'smooth-scroll-into-view-if-needed';
+import debounce from 'lodash.debounce';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useSwipeable } from 'react-swipeable';
 
@@ -22,12 +22,16 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   const scrollUpBuffer = useRef();
   const scrollDownBuffer = useRef();
   const versesWithBuffer = useRef(new Array());
+  const safari = useRef();
   const scroll = useRef(false);
   const scrollOptions = useRef({
-    time: 0,
-    ease: (value) => {
-      return 1 - Math.pow(1 - value, 4);
-    },
+    duration: 0,
+    behavior: 'smooth',
+  });
+  const scrollOptionsSafari = useRef({
+    duration: 400,
+    behavior: 'smooth',
+    ease: (t) => t,
   });
 
   //Fusion
@@ -37,18 +41,34 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   const [fusionSpeed, setFusionSpeed] = useState(200);
   const timer = useRef();
 
-  const { ref } = useSwipeable({
+  // const { ref } = useSwipeable(
+  //   {
+  //     onSwipedUp: () => scrollDown(),
+  //     onSwipedDown: () => scrollUp(),
+  //   },
+  //   {
+  //     trackMouse: false,
+  //   }
+  // );
+
+  const handlers = useSwipeable({
     onSwipedUp: () => scrollDown(),
     onSwipedDown: () => scrollUp(),
   });
 
   const scrollUp = () => {
-    scrollIntoView(versesWithBuffer.current[activeVerse - 1], scrollOptions.current);
+    smoothScrollIntoView(
+      versesWithBuffer.current[activeVerse - 1],
+      safari.current ? scrollOptionsSafari.current : scrollOptions.current
+    );
     setActiveVerse(--activeVerse);
   };
 
   const scrollDown = () => {
-    scrollIntoView(versesWithBuffer.current[activeVerse + 1], scrollOptions.current);
+    smoothScrollIntoView(
+      versesWithBuffer.current[activeVerse + 1],
+      safari.current ? scrollOptionsSafari.current : scrollOptions.current
+    );
     setActiveVerse(++activeVerse);
   };
 
@@ -67,7 +87,15 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   };
 
   const debounceVerseScroll = useCallback(
-    _.debounce(verseScroll, 35, {
+    debounce(verseScroll, 35, {
+      leading: true,
+      trailing: false,
+    }),
+    []
+  );
+
+  const debounceVerseScrollSafari = useCallback(
+    debounce(verseScroll, 70, {
       leading: true,
       trailing: false,
     }),
@@ -165,16 +193,41 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
 
   // Add/remove scroll event listener when entering/leaving normal reading section
   useEffect(() => {
-    ref(window);
-    if (!allowFullPageScrolling) window.addEventListener('wheel', debounceVerseScroll);
-    else window.removeEventListener('wheel', debounceVerseScroll);
+    if (!allowFullPageScrolling)
+      window.addEventListener(
+        'wheel',
+        safari.current ? debounceVerseScrollSafari : debounceVerseScroll
+      );
+    else
+      window.removeEventListener(
+        'wheel',
+        safari.current ? debounceVerseScrollSafari : debounceVerseScroll
+      );
   }, [allowFullPageScrolling]);
+
+  // Detect browser
+  useEffect(() => {
+    // Detect Chrome
+    let chromeAgent = navigator.userAgent.indexOf('Chrome') > -1;
+
+    // Detect Safari
+    let safariAgent = navigator.userAgent.indexOf('Safari') > -1;
+
+    // Discard Safari since it also matches Chrome
+    if (chromeAgent && safariAgent) safariAgent = false;
+
+    safariAgent ? (safari.current = true) : (safari.current = false);
+  }, []);
 
   return (
     <>
       {method == 'normal'
         ? normalPassage && (
-            <div id="normalWrapper" className={cn(styles.normalWrapper, 'page-padding')}>
+            <div
+              {...handlers}
+              id="normalWrapper"
+              className={cn(styles.normalWrapper, 'page-padding')}
+            >
               <div ref={scrollUpBuffer}></div>
               {normalPassage.map((verse, index) => {
                 return (

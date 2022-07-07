@@ -14,6 +14,7 @@
     "classnames": "^2.3.1",
     "firebase": "^9.8.4",
     "lodash": "^4.17.21",
+    "lodash.debounce": "^4.0.8",
     "lottie-react": "^2.2.1",
     "next": "12.1.6",
     "raw-loader": "^4.0.2",
@@ -21,7 +22,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "18.1.0",
     "react-swipeable": "^7.0.0",
-    "scroll-into-view": "^1.16.2"
+    "smooth-scroll-into-view-if-needed": "^1.1.33"
   },
   "devDependencies": {
     "eslint": "8.16.0",

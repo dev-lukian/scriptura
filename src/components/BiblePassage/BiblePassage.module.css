@@ -28,7 +28,7 @@
 .activeVerse {
   cursor: pointer;
   opacity: 1;
-  pointer-events: all;
+  pointer-events: none;
 }
 
 .fusionWrapper {
