@@ -8,16 +8,7 @@ import cn from 'classnames';
 import Lottie from 'lottie-react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { firestore } from '../../firebase/clientApp';
-import {
-  collection,
-  QueryDocumentSnapshot,
-  DocumentData,
-  query,
-  where,
-  limit,
-  getDocs,
-} from '@firebase/firestore';
-const passagesCollection = collection(firestore, 'passage');
+import { collection, query, where, limit, getDocs } from '@firebase/firestore';
 
 // Other Components & Utility Functions
 import BiblePassage from '../components/BiblePassage';
@@ -53,12 +44,10 @@ const Home = () => {
 
   // Retrieves daily passage from firestore
   const getDailyPassage = async () => {
-    const passageQuery = query(passagesCollection, limit(1));
+    const passagesCollection = collection(firestore, 'passage');
+    const passageQuery = query(passagesCollection, limit(1), where('currentPassage', '==', true));
     const querySnapshot = await getDocs(passageQuery);
-    const result = [];
-    querySnapshot.forEach((snapshot) => {
-      result.push(snapshot._document.data.value.mapValue.fields);
-    });
+    const result = querySnapshot._snapshot.docChanges[0].doc.data.value.mapValue.fields;
     setDailyPassage(result);
   };
 
@@ -124,19 +113,12 @@ const Home = () => {
             className={cn(styles.settingsHover, isSettingsOpen && styles.disappear)}
             onClick={() => setIsSettingsOpen(true)}
           >
-            <div
-              className={cn(
-                styles.settingsTextWrapper,
-                hideSettingsText && styles.settingsTextHide
-              )}
-            >
+            <div className={cn(styles.settingsTextWrapper, hideSettingsText && styles.settingsTextHide)}>
               <div className={styles.settingsText}>Settings</div>
               <RightArrow className={styles.rightArrow} />
             </div>
           </div>
-          <div
-            className={cn(styles.settingsWrapper, isSettingsOpen ? styles.settingsAppear : null)}
-          >
+          <div className={cn(styles.settingsWrapper, isSettingsOpen ? styles.settingsAppear : null)}>
             <div className={cn('button', 'round')} onClick={() => setIsSettingsOpen(false)}>
               Close
               <CloseIcon />
@@ -214,13 +196,11 @@ const Home = () => {
                         <Logo className={styles.lightwayLogo} />
                       </div>
                       <div className={styles.studyTitleWrapper}>
-                        <div className="text-size-s">Test</div>
-                        <div className="text-size-xl">{dailyPassage[0].title.stringValue}</div>
+                        <div className="text-size-s">Todays Study</div>
+                        <div className="text-size-xl">{dailyPassage.title.stringValue}</div>
                       </div>
                       <div className={styles.scrollDownWrapper}>
-                        <div className={cn('text-size-xs', 'text-center')}>
-                          Scroll to begin study
-                        </div>
+                        <div className={cn('text-size-xs', 'text-center')}>Scroll to begin study</div>
                         <Lottie
                           className={styles.scrollDown}
                           loop={true}
@@ -232,7 +212,7 @@ const Home = () => {
                   <div className={cn('section', styles.passageSection, 'fp-noscroll')}>
                     <BiblePassage
                       method={readingMethod}
-                      passage={dailyPassage[0].verses.stringValue}
+                      passage={dailyPassage.verses.stringValue}
                       allowFullPageScrolling={allowFullPageScrolling}
                       onCopy={onCopy}
                     />
@@ -240,9 +220,7 @@ const Home = () => {
                   <div className={cn(styles.container, 'section', 'fp-noscroll', 'page-padding')}>
                     <div className={styles.shareWrapper}>
                       <div></div>
-                      <div className={cn('text-size-l')}>
-                        {dailyPassage[0].question.stringValue}
-                      </div>
+                      <div className={cn('text-size-l')}>{dailyPassage.question.stringValue}</div>
                       <div className={styles.scrollDownWrapper}>
                         <Lottie
                           className={styles.scrollDown}
