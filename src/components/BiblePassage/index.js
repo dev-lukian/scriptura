@@ -17,14 +17,14 @@ import ArrowForward from '../../../public/fusion-forward.svg';
 import styles from './BiblePassage.module.css';
 
 const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
-  // Normal
+  // Normal States/Refs
   const [normalPassage, setNormalPassage] = useState();
   const [activeVerse, setActiveVerse] = useState(0);
   const scrollUpBuffer = useRef();
   const scrollDownBuffer = useRef();
   const versesWithBuffer = useRef(new Array());
   const safari = useRef();
-  const swipe = useRef();
+  const swipe = useRef(false);
   const scroll = useRef(false);
   const scrollOptions = useRef({
     duration: 0,
@@ -36,50 +36,56 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
     ease: (t) => t,
   });
 
-  //Fusion
+  //Fusion States/Refs
   const [fusionPassage, setFusionPassage] = useState();
   const [fusionPlay, setFusionPlay] = useState(false);
   const [fusionProgress, setFusionProgress] = useState(0);
-  const [fusionSpeed, setFusionSpeed] = useState(200);
   const timer = useRef();
 
   const { ref } = useSwipeable({
-    onSwipedUp: () => !allowFullPageScrolling && scrollDown(),
-    onSwipedDown: () => !allowFullPageScrolling && scrollUp(),
+    onSwipedUp: () => !allowFullPageScrolling && animateScroll('up'),
+    onSwipedDown: () => !allowFullPageScrolling && animateScroll('down'),
   });
 
-  const scrollUp = () => {
+  const animateScroll = (direction) => {
+    let nextVerse;
+
+    if (direction == 'up') {
+      nextVerse = versesWithBuffer.current[activeVerse - 1];
+    } else {
+      nextVerse = versesWithBuffer.current[activeVerse + 1];
+    }
+
     smoothScrollIntoView(
-      versesWithBuffer.current[activeVerse - 1],
+      nextVerse,
       safari.current && !swipe.current ? scrollOptionsSafari.current : scrollOptions.current
     );
-    setActiveVerse(--activeVerse);
+
+    direction == 'up' ? setActiveVerse(--activeVerse) : setActiveVerse(++activeVerse);
   };
 
-  const scrollDown = () => {
-    smoothScrollIntoView(
-      versesWithBuffer.current[activeVerse + 1],
-      safari.current && !swipe.current ? scrollOptionsSafari.current : scrollOptions.current
-    );
-    setActiveVerse(++activeVerse);
-  };
-
-  // Snap scroll to verse
-  const verseScroll = (event) => {
-    console.log(event);
+  // Snap scroll to verse with arrow key event
+  const verseKeyScroll = (event) => {
     if (!scroll.current) {
       scroll.current = true;
-      if (event.deltaY < 0 && activeVerse > 0) {
-        scrollUp();
-      } else if (event.deltaY > 0 && activeVerse < versesWithBuffer.current.length - 1) {
-        scrollDown();
-      }
+      if (event.key == 'ArrowUp' && activeVerse > 0) animateScroll('up');
+      else if (event.key == 'ArrowDown' && activeVerse < versesWithBuffer.current.length - 1) animateScroll('down');
+      setTimeout(() => (scroll.current = false), 200);
+    }
+  };
+
+  // Snap scroll to verse with wheel event
+  const verseWheelScroll = (event) => {
+    if (!scroll.current) {
+      scroll.current = true;
+      if (event.deltaY < 0 && activeVerse > 0) animateScroll('up');
+      else if (event.deltaY > 0 && activeVerse < versesWithBuffer.current.length - 1) animateScroll('down');
       setTimeout(() => (scroll.current = false), 200);
     }
   };
 
   const debounceVerseScroll = useCallback(
-    debounce(verseScroll, 35, {
+    debounce(verseWheelScroll, 35, {
       leading: true,
       trailing: false,
     }),
@@ -87,7 +93,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   );
 
   const debounceVerseScrollSafari = useCallback(
-    debounce(verseScroll, 70, {
+    debounce(verseWheelScroll, 70, {
       leading: true,
       trailing: false,
     }),
@@ -109,19 +115,27 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
     }
   };
 
+  // Triggers fusion player to start playing when changing to fusion mode
+  useEffect(() => {
+    if (fusionPassage) {
+      if (method == 'fusion') setFusionPlay(true);
+      else setFusionPlay(false);
+    }
+  }, [method]);
+
   // Start fusion player
   useEffect(() => {
     if (fusionPlay) {
       if (fusionProgress < fusionPassage.length - 1) {
         timer.current = setInterval(() => {
           setFusionProgress((fusionProgress) => fusionProgress + 1);
-        }, fusionSpeed);
+        }, 250);
       }
     } else {
       clearInterval(timer.current);
     }
     return () => clearInterval(timer.current);
-  }, [fusionPlay, fusionSpeed]);
+  }, [fusionPlay]);
 
   // Stop fusion player once it gets to the last word
   useEffect(() => {
@@ -183,18 +197,23 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
 
   // Add/remove scroll event listener when entering/leaving normal reading section
   useEffect(() => {
-    ref(window);
-    if (!allowFullPageScrolling)
+    if (!allowFullPageScrolling) {
       window.addEventListener(
         'wheel',
         safari.current && !swipe.current ? debounceVerseScrollSafari : debounceVerseScroll
       );
-    else
+    } else {
       window.removeEventListener(
         'wheel',
         safari.current && !swipe.current ? debounceVerseScrollSafari : debounceVerseScroll
       );
+    }
   }, [allowFullPageScrolling]);
+
+  // Add Swipe listener
+  useEffect(() => {
+    ref(window);
+  }, []);
 
   // Detects browser and device type
   useEffect(() => {
@@ -247,26 +266,6 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
                 >
                   10
                   <ArrowForward />
-                </button>
-              </div>
-              <div className={cn(styles.fusionButtonsWrapper, 'text-size-s')}>
-                <button
-                  className={cn('button', 'light-button', 'round', 'text-size-s')}
-                  onClick={() => setFusionSpeed(150)}
-                >
-                  150 ms
-                </button>
-                <button
-                  className={cn('button', 'light-button', 'round', 'text-size-s')}
-                  onClick={() => setFusionSpeed(200)}
-                >
-                  200 ms
-                </button>
-                <button
-                  className={cn('button', 'light-button', 'round', 'text-size-s')}
-                  onClick={() => setFusionSpeed(250)}
-                >
-                  250 ms
                 </button>
               </div>
             </div>

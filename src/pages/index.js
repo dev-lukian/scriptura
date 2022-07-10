@@ -5,7 +5,6 @@ import Head from 'next/head';
 // NPM Modules
 import ReactFullpage from '@fullpage/react-fullpage';
 import cn from 'classnames';
-import Lottie from 'lottie-react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { firestore } from '../../firebase/clientApp';
 import { collection, query, where, limit, getDocs } from '@firebase/firestore';
@@ -13,6 +12,7 @@ import { collection, query, where, limit, getDocs } from '@firebase/firestore';
 // Other Components & Utility Functions
 import BiblePassage from '../components/BiblePassage';
 import CopiedAlert from '../components/CopiedAlert';
+import ScrollDown from '../components/ScrollDown';
 import { shareOnFacebook, shareOnTwitter, shareOnInstagram } from '../utils/share';
 
 // Assets
@@ -21,8 +21,6 @@ import CloseIcon from '../../public/close-x.svg';
 import RightArrow from '../../public/right-arrow.svg';
 import NormalMethod from '../../public/normal-method-icon.svg';
 import FusionMethod from '../../public/fusion-method-icon.svg';
-import ScrollDownWhite from '../../public/scroll-down.json';
-import ScrollDownBlack from '../../public/scroll-down-black.json';
 import LinkShare from '../../public/share-link.svg';
 import TwitterShare from '../../public/share-twitter.svg';
 import FacebookShare from '../../public/share-facebook.svg';
@@ -190,8 +188,8 @@ const Home = () => {
             render={({ state, fullpageApi }) => {
               return (
                 <ReactFullpage.Wrapper>
-                  <div className={cn(styles.container, 'section', 'fp-noscroll', 'page-padding')}>
-                    <div className={styles.introWrapper}>
+                  <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
+                    <div className={'section-wrapper'}>
                       <div>
                         <Logo className={styles.lightwayLogo} />
                       </div>
@@ -199,14 +197,7 @@ const Home = () => {
                         <div className="text-size-s">Todays Study</div>
                         <div className="text-size-xl">{dailyPassage.title.stringValue}</div>
                       </div>
-                      <div className={styles.scrollDownWrapper}>
-                        <div className={cn('text-size-xs', 'text-center')}>Scroll to begin study</div>
-                        <Lottie
-                          className={styles.scrollDown}
-                          loop={true}
-                          animationData={colorMode == 'dark' ? ScrollDownWhite : ScrollDownBlack}
-                        />
-                      </div>
+                      <ScrollDown text="Scroll to begin study" colorMode={colorMode} />
                     </div>
                   </div>
                   <div className={cn('section', styles.passageSection, 'fp-noscroll')}>
@@ -217,21 +208,15 @@ const Home = () => {
                       onCopy={onCopy}
                     />
                   </div>
-                  <div className={cn(styles.container, 'section', 'fp-noscroll', 'page-padding')}>
-                    <div className={styles.shareWrapper}>
+                  <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
+                    <div className={'section-wrapper'}>
                       <div></div>
                       <div className={cn('text-size-l')}>{dailyPassage.question.stringValue}</div>
-                      <div className={styles.scrollDownWrapper}>
-                        <Lottie
-                          className={styles.scrollDown}
-                          loop={true}
-                          animationData={colorMode == 'dark' ? ScrollDownWhite : ScrollDownBlack}
-                        />
-                      </div>
+                      <ScrollDown text="" colorMode={colorMode} />
                     </div>
                   </div>
-                  <div className={cn(styles.container, 'section', 'fp-noscroll', 'page-padding')}>
-                    <div className={cn(styles.shareWrapper)}>
+                  <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
+                    <div className={'section-wrapper'}>
                       <div className={cn(styles.shareTop, 'text-size-s', 'text-center')}>
                         Daily Growth from God’s Word.
                       </div>

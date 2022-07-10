@@ -2,7 +2,6 @@
   max-width: 90rem;
   margin: auto;
 }
-
 .settingsHover {
   display: flex;
   align-items: center;
@@ -133,43 +132,11 @@
   background-color: white;
 }
 
-.introWrapper {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .studyTitleWrapper {
   width: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
-
-.scrollDownWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  row-gap: 1rem;
-}
-
-.scrollDown {
-  width: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  filter: grayscale(100%);
-}
-
-.absoluteScrollDown {
-  position: absolute;
-  bottom: 3rem;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .passageSection {
@@ -180,22 +147,6 @@
 
 .passageSection::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
-}
-
-.questionWrapper {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.shareWrapper {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .shareMiddle {
@@ -248,10 +199,6 @@ Responsive Breakpoints
     transform: scale(0.9);
   }
 
-  .scrollDown {
-    width: 1.5rem;
-  }
-
   .shareButtonsWrapper {
     grid-gap: 2rem;
   }
@@ -268,10 +215,6 @@ Responsive Breakpoints
 
 /* Mobile Horizontal */
 @media only screen and (max-width: 767px) {
-  .scrollDown {
-    width: 1.25rem;
-  }
-
   .shareButtonsWrapper {
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
@@ -362,10 +305,6 @@ Responsive Breakpoints
 @media only screen and (max-width: 478px) {
   .lightwayLogo {
     transform: scale(0.72);
-  }
-
-  .scrollDown {
-    width: 1rem;
   }
 
   .shareButton {

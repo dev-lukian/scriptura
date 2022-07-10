@@ -1,3 +1,12 @@
+/* Tablet
+@media only screen and (max-width: 991px) {}
+
+Mobile Horizontal
+@media only screen and (max-width: 767px) {}
+
+Mobile Vertical
+@media only screen and (max-width: 478px) {} */
+
 :root {
   --bg-color: #000000;
   --font-color: #dde3ea;
@@ -27,8 +36,61 @@ button {
   font-weight: 700;
 }
 
+form input {
+  background-color: transparent;
+  border-radius: 0;
+  border-width: 0 0 1px 0;
+  border-bottom-color: var(--light-50-color);
+}
+
+form input:hover {
+  border-bottom-color: var(--font-color);
+}
+
+form input:focus {
+  outline: none;
+  -webkit-appearance: none;
+  border-bottom-color: var(--font-color);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+.container {
+  max-width: 90rem;
+  margin: auto;
+}
+
+.section-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .page-padding {
   padding: 3rem 7rem;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-column {
+  flex-direction: column;
 }
 
 .text-size-xl {
