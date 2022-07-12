@@ -1,0 +1,118 @@
+.hidden {
+  opacity: 0;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.scrollDownTransition {
+  transition: opacity 0.5s ease;
+}
+
+.jamesVerseWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem;
+  margin-top: 5rem;
+  max-width: 35ch;
+}
+
+.ageWrapper {
+  row-gap: 1rem;
+}
+
+.visualizeText {
+  max-width: 25ch;
+}
+
+.ageInputWrapper {
+  width: 30%;
+  row-gap: 0.5rem;
+}
+
+.ageInput {
+  width: 100%;
+  color: var(--font-color);
+  font-family: Inter;
+  text-align: center;
+}
+
+.ageInput::placeholder {
+  color: var(--light-50-color);
+}
+
+.doYouThinkText {
+  max-width: 18ch;
+  margin-bottom: 5rem;
+}
+
+.yearAnimationWrapper {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.yearTicWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 0.5%;
+}
+
+.yearTic {
+  height: 1rem;
+  width: 1.25%;
+  border-radius: 1rem;
+  background-color: #8a8da7;
+  transition: background-color 0.1s ease;
+}
+
+.activeYearTic {
+  background-color: #74e0f8;
+}
+
+.yearLabelWrapper {
+  width: 100%;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.yearLabel {
+  color: var(--light-50-color);
+  transition: color 0.2s ease, transform 0.4s ease-out;
+}
+
+.activeYearLabel {
+  transform: scale(1.1);
+  color: var(--font-color);
+}
+
+.asYouGetOlderText {
+  margin-top: 5rem;
+  max-width: 35ch;
+}
+
+.yearBar {
+  position: relative;
+  height: 1.5rem;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: #8a8da7;
+  overflow: hidden;
+}
+
+.activeYearBar {
+  position: absolute;
+  left: 0%;
+  height: 100%;
+  border-radius: 1rem;
+  background-color: #74e0f8;
+}

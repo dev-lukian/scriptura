@@ -93,6 +93,10 @@ input[type='number'] {
   flex-direction: column;
 }
 
+.width-100-percent {
+  width: 100%;
+}
+
 .text-size-xl {
   font-size: 6.5rem;
 }
@@ -154,6 +158,10 @@ Responsive Breakpoints
 
 /* Tablet */
 @media only screen and (max-width: 991px) {
+  .lightwayLogo {
+    transform: scale(0.9);
+  }
+
   .page-padding {
     padding: 2rem 4rem;
   }
@@ -208,6 +216,10 @@ Responsive Breakpoints
 
 /* Mobile Vertical */
 @media only screen and (max-width: 478px) {
+  .lightwayLogo {
+    transform: scale(0.72);
+  }
+
   .page-padding {
     padding: 1rem 2rem;
   }

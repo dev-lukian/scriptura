@@ -11,7 +11,6 @@ import { collection, query, where, limit, getDocs } from '@firebase/firestore';
 
 // Other Components & Utility Functions
 import BiblePassage from '../components/BiblePassage';
-import CopiedAlert from '../components/CopiedAlert';
 import ScrollDown from '../components/ScrollDown';
 import { shareOnFacebook, shareOnTwitter, shareOnInstagram } from '../utils/share';
 
@@ -27,14 +26,12 @@ import FacebookShare from '../../public/share-facebook.svg';
 import InstagramShare from '../../public/share-instagram.svg';
 
 // Styles
-import styles from '../../styles/Home.module.css';
+import styles from '../../styles/Read.module.css';
 
-const Home = () => {
+const Home = ({ colorMode, setColorMode, onCopy }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [hideSettingsText, setHideSettingsText] = useState(false);
-  const [showCopyAlert, setShowCopyAlert] = useState(false);
   const [readingMethod, setReadingMethod] = useState('normal');
-  const [colorMode, setColorMode] = useState('dark');
   const [activeSection, setActiveSection] = useState();
   const [allowFullPageScrolling, setAllowFullPageScrolling] = useState(true);
   const [dailyPassage, setDailyPassage] = useState();
@@ -49,12 +46,6 @@ const Home = () => {
     setDailyPassage(result);
   };
 
-  // Show copied to clipboard alert
-  const onCopy = () => {
-    setShowCopyAlert(true);
-    setTimeout(() => setShowCopyAlert(false), 2000);
-  };
-
   const fullPageScrolling = (enable) => {
     setAllowFullPageScrolling(enable);
     fullpage_api.setAllowScrolling(enable);
@@ -66,11 +57,6 @@ const Home = () => {
     getDailyPassage();
     url.current = 'www.' + window.location.host;
   }, []);
-
-  // Change color mode
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', colorMode);
-  }, [colorMode]);
 
   // Disable/enable scroll when leaving/entering normal reading section
   useEffect(() => {
@@ -191,7 +177,7 @@ const Home = () => {
                   <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
                     <div className={'section-wrapper'}>
                       <div>
-                        <Logo className={styles.lightwayLogo} />
+                        <Logo className="lightwayLogo" />
                       </div>
                       <div className={styles.studyTitleWrapper}>
                         <div className="text-size-s">Todays Study</div>
@@ -239,9 +225,9 @@ const Home = () => {
                           </button>
                         </div>
                       </div>
-                      <div className={cn(styles.shareBottom, 'text-size-xs')}>
+                      <div>
                         <CopyToClipboard text={url.current} onCopy={onCopy}>
-                          <button className={cn('button', 'round')}>{url.current}</button>
+                          <button className={cn('button', 'round', 'text-size-xs')}>{url.current}</button>
                         </CopyToClipboard>
                       </div>
                     </div>
@@ -252,7 +238,6 @@ const Home = () => {
           />
         </>
       )}
-      <CopiedAlert visible={showCopyAlert} />
     </>
   );
 };
