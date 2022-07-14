@@ -43,8 +43,8 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   const timer = useRef();
 
   const { ref } = useSwipeable({
-    onSwipedUp: () => !allowFullPageScrolling && animateScroll('up'),
-    onSwipedDown: () => !allowFullPageScrolling && animateScroll('down'),
+    onSwipedUp: () => !allowFullPageScrolling && animateScroll('down'),
+    onSwipedDown: () => !allowFullPageScrolling && animateScroll('up'),
   });
 
   const animateScroll = (direction) => {
