@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 // NextJS/React
 import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
@@ -12,7 +13,7 @@ import ScrollDown from '../components/ScrollDown';
 // Styles
 import styles from '../../styles/LifeIsShort.module.css';
 
-const LifeIsShort = () => {
+const LifeIsShort = ({ colorMode }) => {
   const [age, setAge] = useState();
   const [activeSection, setActiveSection] = useState();
   const [ageAnimationProgress, setAgeAnimationProgress] = useState(0);
@@ -75,7 +76,7 @@ const LifeIsShort = () => {
       </Head>
       <ReactFullpage
         //fullpage options
-        licenseKey={'YOUR_KEY_HERE'}
+        licenseKey={'1K657-9OWO9-KBVY6-RJO1I-TGMZM'}
         scrollingSpeed={1000}
         scrollOverflow={true}
         keyboardScrolling={true}
@@ -99,7 +100,7 @@ const LifeIsShort = () => {
                       <div>James 4:14 </div>
                     </div>
                   </div>
-                  <ScrollDown text="But, just how short is it?" colorMode={'dark'} />
+                  <ScrollDown text="But, just how short is it?" colorMode={colorMode} />
                 </div>
               </div>
               <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
@@ -124,7 +125,7 @@ const LifeIsShort = () => {
                     </form>
                   </div>
                   <div className={cn(styles.scrollDownTransition, age ? styles.visible : styles.hidden)}>
-                    <ScrollDown text="Let’s find out" colorMode={'dark'} />
+                    <ScrollDown text="Let’s find out" colorMode={colorMode} />
                   </div>
                 </div>
               </div>
@@ -171,7 +172,7 @@ const LifeIsShort = () => {
                       age == ageAnimationProgress ? styles.visible : styles.hidden
                     )}
                   >
-                    <ScrollDown text="Realize just how short life is." colorMode={'dark'} />
+                    <ScrollDown text="Realize just how short life is." colorMode={colorMode} />
                   </div>
                 </div>
               </div>
@@ -213,7 +214,27 @@ const LifeIsShort = () => {
                       age == relativeAgeAnimationProgress ? styles.visible : styles.hidden
                     )}
                   >
-                    <ScrollDown text="Why does understanding this matter?" colorMode={'dark'} />
+                    <ScrollDown text="Why does understanding this matter?" colorMode={colorMode} />
+                  </div>
+                </div>
+              </div>
+              <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
+                <div className="section-wrapper">
+                  <div>
+                    <Logo className="lightwayLogo" />
+                  </div>
+                  <div className={cn('flex-center', 'flex-column', 'text-center')}>
+                    <div className={cn('text-size-l', styles.dontWasteItText)}>Life is short, don't waste it.</div>
+                    <div className={cn('text-size-s', styles.jamesVerseWrapper)}>
+                      <div>
+                        "Yet you do not know what tomorrow will bring. What is your life? For you are a mist that
+                        appears for a little time and then vanishes."
+                      </div>
+                      <div>James 4:14</div>
+                    </div>
+                  </div>
+                  <div>
+                    <button className={cn('button', 'round', 'text-size-xs')}>Read the Bible</button>
                   </div>
                 </div>
               </div>

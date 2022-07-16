@@ -162,7 +162,7 @@ const Home = ({ colorMode, setColorMode, onCopy }) => {
           </div>
           <ReactFullpage
             //fullpage options
-            licenseKey={'YOUR_KEY_HERE'}
+            licenseKey={'1K657-9OWO9-KBVY6-RJO1I-TGMZM'}
             scrollingSpeed={1000} /* Options here */
             scrollOverflow={true}
             keyboardScrolling={true}
