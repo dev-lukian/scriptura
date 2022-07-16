@@ -55,7 +55,7 @@ const Home = ({ colorMode, setColorMode, onCopy }) => {
   // Component did mount
   useEffect(() => {
     getDailyPassage();
-    url.current = 'www.' + window.location.host;
+    url.current = window.location.host;
   }, []);
 
   // Disable/enable scroll when leaving/entering normal reading section
