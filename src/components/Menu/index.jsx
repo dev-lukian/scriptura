@@ -36,8 +36,8 @@ const Menu = ({ showMenu, handleMenuClick, onCopy }) => {
         })}
       </div>
       <div>
-        <CopyToClipboard text="info@Lightway.com" onCopy={onCopy}>
-          <button className={cn('button', 'round', 'text-size-xs')}>info@Lightway.com</button>
+        <CopyToClipboard text="info@scriptura.com" onCopy={onCopy}>
+          <button className={cn('button', 'round', 'text-size-xs')}>info@scriptura.com</button>
         </CopyToClipboard>
       </div>
     </div>
