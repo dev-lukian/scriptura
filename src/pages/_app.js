@@ -10,6 +10,7 @@ import cn from 'classnames';
 
 import MenuHamburgerWhite from '../../public/menu.json';
 import MenuHamburgerBlack from '../../public/menu-black.json';
+import previewImage from '../../public/og-image.png';
 
 import Menu from '../components/Menu';
 import CopiedAlert from '../components/CopiedAlert';
@@ -50,6 +51,11 @@ function MyApp({ Component, pageProps }) {
         <title>Scriptura</title>
         <meta name="description" content="Scriptura - Bible Reading Experience" />
         <link rel="icon" href="/favicon.ico" />
+        {/* Open Graph */}
+        <meta property="og:image" content={previewImage} key="ogimage" />
+        <meta property="og:site_name" content="Scriptura" key="ogsitename" />
+        <meta property="og:title" content="Scriptura" key="ogtitle" />
+        <meta property="og:description" content="Bible Reading Experience" key="ogdesc" />
       </Head>
       <Menu showMenu={showMenu} handleMenuClick={handleMenuClick} onCopy={onCopy} />
       <div className={cn(styles.menuHover, !showMenuButton && styles.hidden)}>
