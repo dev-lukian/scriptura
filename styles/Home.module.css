@@ -5,13 +5,17 @@
   justify-content: center;
   position: fixed;
   padding: 3rem 7rem;
-  z-index: 20;
+  z-index: 30;
 }
 
 .menuButtonLottie {
   width: 1.5rem;
   height: 1.5rem;
   z-index: 10;
+}
+
+.hidden {
+  display: none;
 }
 
 /* Tablet */

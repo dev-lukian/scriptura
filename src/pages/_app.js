@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import Head from 'next/head';
+
 import '../../styles/globals.css';
 import '../../public/fonts/style.css';
 import styles from '../../styles/Home.module.css';
@@ -14,6 +16,7 @@ import CopiedAlert from '../components/CopiedAlert';
 
 function MyApp({ Component, pageProps }) {
   const [colorMode, setColorMode] = useState('dark');
+  const [showMenuButton, setShowMenuButton] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [showCopyAlert, setShowCopyAlert] = useState(false);
   const menuRef = useRef();
@@ -24,6 +27,7 @@ function MyApp({ Component, pageProps }) {
     setTimeout(() => setShowCopyAlert(false), 2000);
   };
 
+  // Play menu lottie animation and make menu appear
   const handleMenuClick = () => {
     if (!showMenu) menuRef.current.playSegments([0, 50], true);
     else menuRef.current.playSegments([50, 0], true);
@@ -35,26 +39,38 @@ function MyApp({ Component, pageProps }) {
     document.documentElement.setAttribute('data-theme', colorMode);
   }, [colorMode]);
 
+  // Increase speed of menu lottie
   useEffect(() => {
-    menuRef.current.setSpeed(3);
+    menuRef.current.setSpeed(3.5);
   }, []);
 
   return (
     <>
-      <Menu showMenu={showMenu} setShowMenu={setShowMenu} handleMenuClick={handleMenuClick} onCopy={onCopy} />
-      <div className={styles.menuHover}>
-        <button className={cn('button', 'round')}>
+      <Head>
+        <title>Scriptura</title>
+        <meta name="description" content="Scriptura - Bible Reading Experience" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Menu showMenu={showMenu} handleMenuClick={handleMenuClick} onCopy={onCopy} />
+      <div className={cn(styles.menuHover, !showMenuButton && styles.hidden)}>
+        <button className={cn('button', 'circle')} onClick={handleMenuClick}>
           <Lottie
             className={cn(styles.menuButtonLottie)}
             lottieRef={menuRef}
             loop={false}
             autoplay={false}
-            onClick={handleMenuClick}
             animationData={colorMode == 'dark' ? MenuHamburgerWhite : MenuHamburgerBlack}
           />
         </button>
       </div>
-      <Component {...pageProps} colorMode={colorMode} setColorMode={setColorMode} onCopy={onCopy} />
+      <Component
+        {...pageProps}
+        colorMode={colorMode}
+        setColorMode={setColorMode}
+        onCopy={onCopy}
+        showMenuButton={showMenuButton}
+        setShowMenuButton={setShowMenuButton}
+      />
       <CopiedAlert visible={showCopyAlert} />
     </>
   );

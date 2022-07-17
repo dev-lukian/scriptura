@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import cn from 'classnames';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import styles from './Menu.module.css';
@@ -10,10 +10,12 @@ const menuLinks = [
   { text: 'Life is short', path: '/life-is-short' },
 ];
 
-const Menu = ({ showMenu, setShowMenu, handleMenuClick, onCopy }) => {
-  const switchPages = () => {
-    setShowMenu(false);
+const Menu = ({ showMenu, handleMenuClick, onCopy }) => {
+  const router = useRouter();
+
+  const switchPages = (path) => {
     handleMenuClick();
+    router.push(path);
   };
 
   return (
@@ -24,14 +26,12 @@ const Menu = ({ showMenu, setShowMenu, handleMenuClick, onCopy }) => {
       <div className={styles.linksWrapper}>
         {menuLinks.map((link, index) => {
           return (
-            <Link key={index} href={link.path}>
-              <button className={styles.linkWrapper} onClick={switchPages}>
-                <div className="text-size-m">{link.text}</div>
-                <div className={styles.chevronWrapper}>
-                  <RightChevron className={styles.chevron} />
-                </div>
-              </button>
-            </Link>
+            <button key={index} className={styles.linkWrapper} onClick={() => switchPages(link.path)}>
+              <div className="text-size-m">{link.text}</div>
+              <div className={styles.chevronWrapper}>
+                <RightChevron className={styles.chevron} />
+              </div>
+            </button>
           );
         })}
       </div>
