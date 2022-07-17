@@ -56,7 +56,7 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
 
         <meta property="og:type" content="website" key="ogwebsite" />
-        <meta property="og:image" content={url.current + '/og-image.png'} key="ogimage" />
+        <meta property="og:image" content="/og-image.png" key="ogimage" />
         <meta property="og:site_name" content="Scriptura" key="ogsitename" />
         <meta property="og:title" content="Scriptura" key="ogtitle" />
         <meta property="og:description" content="Bible Reading Experience" key="ogdesc" />
