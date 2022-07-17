@@ -1,6 +1,5 @@
 // NextJS/React
 import { useEffect, useState, useRef } from 'react';
-import Head from 'next/head';
 
 // NPM Modules
 import ReactFullpage from '@fullpage/react-fullpage';
@@ -28,7 +27,7 @@ import InstagramShare from '../../public/share-instagram.svg';
 // Styles
 import styles from '../../styles/Read.module.css';
 
-const Home = ({ colorMode, setColorMode, onCopy }) => {
+const Home = ({ colorMode, setColorMode, onCopy, showMenuButton, setShowMenuButton }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [hideSettingsText, setHideSettingsText] = useState(false);
   const [readingMethod, setReadingMethod] = useState('normal');
@@ -39,17 +38,22 @@ const Home = ({ colorMode, setColorMode, onCopy }) => {
 
   // Retrieves daily passage from firestore
   const getDailyPassage = async () => {
-    const passagesCollection = collection(firestore, 'passage');
-    const passageQuery = query(passagesCollection, limit(1), where('currentPassage', '==', true));
-    const querySnapshot = await getDocs(passageQuery);
-    const result = querySnapshot._snapshot.docChanges[0].doc.data.value.mapValue.fields;
-    setDailyPassage(result);
+    const cachedPassage = sessionStorage.getItem('dailyPassage');
+    if (cachedPassage != null) {
+      setDailyPassage(JSON.parse(cachedPassage));
+    } else {
+      const passagesCollection = collection(firestore, 'passage');
+      const passageQuery = query(passagesCollection, limit(1), where('currentPassage', '==', true));
+      const querySnapshot = await getDocs(passageQuery);
+      const result = querySnapshot._snapshot.docChanges[0].doc.data.value.mapValue.fields;
+      setDailyPassage(result);
+      sessionStorage.setItem('dailyPassage', JSON.stringify(result));
+    }
   };
 
   const fullPageScrolling = (enable) => {
     setAllowFullPageScrolling(enable);
     fullpage_api.setAllowScrolling(enable);
-    fullpage_api.setKeyboardScrolling(enable);
   };
 
   // Component did mount
@@ -76,21 +80,19 @@ const Home = ({ colorMode, setColorMode, onCopy }) => {
     }
   }, [activeSection, readingMethod]);
 
-  // Hide settings text after the first section
+  // 1) Hide settings text after the first section
+  // 2) Hide menu button in the reading portion
   useEffect(() => {
     if (activeSection !== undefined) {
       if (activeSection === 0 && hideSettingsText) setHideSettingsText(false);
       if (activeSection !== 0 && !hideSettingsText) setHideSettingsText(true);
+      if (activeSection == 1 && showMenuButton) setShowMenuButton(false);
+      if (activeSection != 1 && !showMenuButton) setShowMenuButton(true);
     }
   }, [activeSection]);
 
   return (
     <>
-      <Head>
-        <title>Lightway</title>
-        <meta name="description" content="Lightway - Bible Reading Experience" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       {dailyPassage && (
         <>
           <div
@@ -163,10 +165,9 @@ const Home = ({ colorMode, setColorMode, onCopy }) => {
           <ReactFullpage
             //fullpage options
             licenseKey={'1K657-9OWO9-KBVY6-RJO1I-TGMZM'}
-            scrollingSpeed={1000} /* Options here */
+            scrollingSpeed={1000}
             scrollOverflow={true}
-            keyboardScrolling={true}
-            // anchors={["1", "2", "3", "4"]}
+            keyboardScrolling={false}
             normalScrollElements={'#normalWrapper'}
             onLeave={(origin, destination, direction, trigger) => {
               setActiveSection(destination.index);
