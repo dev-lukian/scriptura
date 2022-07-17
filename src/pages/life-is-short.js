@@ -81,9 +81,6 @@ const LifeIsShort = ({ colorMode }) => {
         scrollingSpeed={1000}
         scrollOverflow={true}
         keyboardScrolling={false}
-        afterRender={() => {
-          fullpage_api.reBuild();
-        }}
         onLeave={(origin, destination, direction, trigger) => {
           setSlidePause(true);
           setActiveSection(destination.index);
