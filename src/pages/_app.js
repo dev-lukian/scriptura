@@ -21,6 +21,7 @@ function MyApp({ Component, pageProps }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showCopyAlert, setShowCopyAlert] = useState(false);
   const menuRef = useRef();
+  const url = useRef();
 
   // Show copied to clipboard alert
   const onCopy = () => {
@@ -43,6 +44,8 @@ function MyApp({ Component, pageProps }) {
   // Increase speed of menu lottie
   useEffect(() => {
     menuRef.current.setSpeed(3.5);
+    url.current = window.location.host;
+    console.log(url.current + '/og-image.png');
   }, []);
 
   return (
@@ -51,8 +54,9 @@ function MyApp({ Component, pageProps }) {
         <title>Scriptura</title>
         <meta name="description" content="Scriptura - Bible Reading Experience" />
         <link rel="icon" href="/favicon.ico" />
-        {/* Open Graph */}
-        <meta property="og:image" content={previewImage} key="ogimage" />
+
+        <meta property="og:type" content="website" key="ogwebsite" />
+        <meta property="og:image" content={url.current + '/og-image.png'} key="ogimage" />
         <meta property="og:site_name" content="Scriptura" key="ogsitename" />
         <meta property="og:title" content="Scriptura" key="ogtitle" />
         <meta property="og:description" content="Bible Reading Experience" key="ogdesc" />
