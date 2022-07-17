@@ -115,6 +115,7 @@
   height: 100%;
   border-radius: 1rem;
   background-color: #74e0f8;
+  transition: width 0.8s ease-in;
 }
 
 .dontWasteItText {

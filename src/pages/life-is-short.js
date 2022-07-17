@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 // NextJS/React
 import { useEffect, useState, useRef } from 'react';
-import Head from 'next/head';
 
 // NPM Modules
 import ReactFullpage from '@fullpage/react-fullpage';
@@ -19,23 +18,10 @@ const LifeIsShort = ({ colorMode }) => {
   const [ageAnimationProgress, setAgeAnimationProgress] = useState(0);
   const [relativeAgeAnimationProgress, setRelativeAgeAnimationProgress] = useState(0);
   const [slidePause, setSlidePause] = useState(false);
+  const [relativeBarTransitionTime, setRelativeBarTransitionTime] = useState('0ms');
+  const [relativeBarProgress, setRelativeBarProgress] = useState('0%');
   const relativeLabels = useRef(new Array());
   const relativeLabelWrapper = useRef();
-
-  // const setRelativeBarProgress = () => {
-  //   if (activeSection == 3 && !slidePause) {
-  //     const labelMax = relativeLabels.current[Math.ceil(age / 10)];
-  //     const labelMin = relativeLabels.current[Math.floor(age / 10)];
-  //     console.log({ labelMax, labelMin });
-  //     return '50%';
-  //   } else {
-  //     return;
-  //   }
-  // };
-
-  // const setRelativeBarStyles = () => {
-  //   console.log('run');
-  // };
 
   useEffect(() => {
     if (age > 80) setAge(80);
@@ -45,6 +31,8 @@ const LifeIsShort = ({ colorMode }) => {
   useEffect(() => {
     if (activeSection == 2) {
       setRelativeAgeAnimationProgress(0);
+      setRelativeBarProgress('0%');
+      setRelativeBarTransitionTime('0ms');
       if (age && !slidePause) {
         if (ageAnimationProgress < age) {
           setTimeout(() => setAgeAnimationProgress((ageAnimationProgress) => ageAnimationProgress + 1), 75);
@@ -64,22 +52,38 @@ const LifeIsShort = ({ colorMode }) => {
     } else if (activeSection == 1) {
       setRelativeAgeAnimationProgress(0);
       setAgeAnimationProgress(0);
+      setRelativeBarProgress('0%');
+      setRelativeBarTransitionTime('0ms');
+    } else {
+      setRelativeAgeAnimationProgress(age);
     }
   }, [activeSection, ageAnimationProgress, relativeAgeAnimationProgress, slidePause]);
 
+  useEffect(() => {
+    if (activeSection == 3 && !slidePause && age) {
+      const labelMax = relativeLabels.current[Math.ceil(age / 10)].offsetLeft;
+      const labelMin = relativeLabels.current[Math.floor(age / 10)].offsetLeft;
+      const labelDistanceIncrement = (age % 10) * ((labelMax - labelMin) / 10);
+      const labelsWrapperWidth = relativeLabelWrapper.current.clientWidth;
+      const labelsWrapperOffset = relativeLabelWrapper.current.offsetLeft;
+      const barProgress = ((labelMin - labelsWrapperOffset + labelDistanceIncrement) / labelsWrapperWidth) * 105;
+      setRelativeBarProgress(barProgress.toString() + '%');
+      setRelativeBarTransitionTime((Math.pow(age, 2) + 50) / 2 + 'ms');
+      console.log((Math.pow(age, 2) + 50) / 2 + 'ms');
+    }
+  }, [slidePause]);
+
   return (
     <>
-      <Head>
-        <title>Life is short</title>
-        <meta name="description" content="Lightway - Bible Reading Experience" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <ReactFullpage
         //fullpage options
         licenseKey={'1K657-9OWO9-KBVY6-RJO1I-TGMZM'}
         scrollingSpeed={1000}
         scrollOverflow={true}
-        keyboardScrolling={true}
+        keyboardScrolling={false}
+        afterRender={() => {
+          fullpage_api.reBuild();
+        }}
         onLeave={(origin, destination, direction, trigger) => {
           setSlidePause(true);
           setActiveSection(destination.index);
@@ -185,8 +189,17 @@ const LifeIsShort = ({ colorMode }) => {
                       As you get older, years turn into months, months into weeks, and weeks pass by like days.
                     </div>
                     <div className={cn('width-100-percent', styles.yearAnimationWrapper)}>
+                      {/*luke*/}
                       <div className={styles.yearBar}>
-                        <div className={styles.activeYearBar}></div>
+                        <div
+                          className={styles.activeYearBar}
+                          style={{
+                            width: relativeBarProgress,
+                            transitionDuration: relativeBarTransitionTime,
+                          }}
+                        >
+                          {console.log(relativeBarTransitionTime.current)}
+                        </div>
                       </div>
                       <div ref={relativeLabelWrapper} className={styles.yearLabelWrapper}>
                         {[1, 10, 20, 30, 40, 50, 60, 70, 80].map((element, index) => {
@@ -233,9 +246,7 @@ const LifeIsShort = ({ colorMode }) => {
                       <div>James 4:14</div>
                     </div>
                   </div>
-                  <div>
-                    <button className={cn('button', 'round', 'text-size-xs')}>Read the Bible</button>
-                  </div>
+                  <div></div>
                 </div>
               </div>
             </ReactFullpage.Wrapper>
