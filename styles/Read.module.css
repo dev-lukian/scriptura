@@ -1,0 +1,318 @@
+.container {
+  max-width: 90rem;
+  margin: auto;
+}
+.settingsHover {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: fixed;
+  height: 100vh;
+  width: 3rem;
+  left: auto;
+  right: 0%;
+  padding-right: 1rem;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.disappear {
+  display: none;
+}
+
+.settingsHover:hover .settingsTextWrapper {
+  margin-right: 0;
+  transform: translateX(-1rem);
+}
+
+.settingsHover:hover ~ .settingsWrapper {
+  transform: translateX(-1rem);
+}
+
+.settingsTextWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.5s all;
+}
+
+.settingsText {
+  transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  margin-right: -0.5rem;
+  color: var(--font-color);
+  opacity: 0.5;
+}
+
+.settingsTextHide {
+  margin-right: -5rem;
+}
+
+.settingsWrapper {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+  row-gap: 1rem;
+  z-index: 5;
+  padding-right: 1rem;
+  margin-right: -11rem;
+  transition: 0.5s all;
+}
+
+.settingsAppear {
+  transform: translateX(-11rem);
+}
+
+.settingOptionsWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  overflow: hidden;
+  background-color: #282b31;
+  color: white;
+}
+
+.settingOptionBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 10rem;
+  width: 10rem;
+  row-gap: 1rem;
+  opacity: 50%;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.settingOptionBlock:hover {
+  opacity: 100%;
+}
+
+.active {
+  opacity: 100%;
+}
+
+.settingOptionTop {
+  border-bottom: 1px solid black;
+}
+
+.settingOptionBottom {
+  border-top: 1px solid black;
+}
+
+.innerCircle {
+  height: 2.5rem;
+  width: 2.5rem;
+  border-radius: 100%;
+  background-color: black;
+  position: relative;
+}
+
+.outerCircle {
+  position: absolute;
+  height: 3.5rem;
+  width: 3.5rem;
+  border-radius: 100%;
+  border: 2px solid white;
+  transform: translate(-0.6rem, -0.6rem);
+}
+
+.whiteCircle {
+  background-color: white;
+}
+
+.studyTitleWrapper {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.passageSection {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+  overflow: hidden;
+}
+
+.passageSection::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.shareMiddle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 3rem;
+}
+
+.shareButtonsWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 3.5rem;
+}
+
+.shareButton {
+  border: 2px solid;
+  border-color: var(--light-50-color);
+  background-color: transparent;
+  color: var(--font-color);
+  transition: 0.3s all;
+  cursor: pointer;
+  border-radius: 100%;
+  width: 11rem;
+  height: 11rem;
+}
+
+.shareButton:hover {
+  background-color: var(--font-color);
+  border-color: var(--font-color);
+  color: var(--bg-color);
+}
+
+.shareIcon {
+  transform: scale(1);
+}
+
+/* 
+Responsive Breakpoints
+>    1440 px : Large Desktop
+1440 - 991 px: Desktop
+991  - 767 px: Tablet
+767  - 478 px: Mobile Horizontal
+<    478 px  : Mobile Vertical
+*/
+
+/* Tablet */
+@media only screen and (max-width: 991px) {
+  .lightwayLogo {
+    transform: scale(0.9);
+  }
+
+  .shareButtonsWrapper {
+    grid-gap: 2rem;
+  }
+
+  .shareButton {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .shareIcon {
+    transform: scale(0.9);
+  }
+}
+
+/* Mobile Horizontal */
+@media only screen and (max-width: 767px) {
+  .shareButtonsWrapper {
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+  }
+
+  .settingsHover {
+    height: 5rem;
+    width: 4rem;
+    padding-right: 0rem;
+    justify-content: center;
+  }
+
+  .rightArrow {
+    transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+  }
+
+  .settingsText {
+    transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    margin-right: 0rem;
+    margin-top: 0.5rem;
+  }
+
+  .settingsTextWrapper {
+    flex-direction: column-reverse;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+  }
+  /*hi*/
+  .settingsHover:hover .settingsTextWrapper {
+    margin-top: 0%;
+    transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+    -webkit-transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+    -moz-transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+    -ms-transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+    -o-transform: rotate(45deg) translateX(-0.25rem) translateY(1rem);
+  }
+
+  .settingsHover:hover ~ .settingsWrapper {
+    transform: none;
+  }
+
+  .settingsTextHide {
+    margin-right: -6rem;
+    margin-top: -6rem;
+  }
+
+  .settingsWrapper {
+    left: 0%;
+    margin-right: 0;
+    padding-right: 0;
+    display: none;
+  }
+
+  .settingsAppear {
+    transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .settingOptionsWrapper {
+    flex-direction: row;
+  }
+
+  .settingOptionTop {
+    border-bottom: 0px solid black;
+    border-right: 1px solid black;
+  }
+
+  .settingOptionBottom {
+    border-top: 0px solid black;
+    border-left: 1px solid black;
+  }
+}
+
+/* Mobile Vertical */
+@media only screen and (max-width: 478px) {
+  .lightwayLogo {
+    transform: scale(0.72);
+  }
+
+  .shareButton {
+    width: 8rem;
+    height: 8rem;
+  }
+
+  .shareIcon {
+    transform: scale(0.72);
+  }
+}

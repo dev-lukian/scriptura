@@ -1,0 +1,36 @@
+.scrollDownWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  row-gap: 1rem;
+}
+
+.scrollDown {
+  width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: grayscale(100%);
+}
+
+/* Tablet */
+@media only screen and (max-width: 991px) {
+  .scrollDown {
+    width: 1.5rem;
+  }
+}
+
+/* Mobile Horizontal */
+@media only screen and (max-width: 767px) {
+  .scrollDown {
+    width: 1.25rem;
+  }
+}
+
+/* Mobile Vertical */
+@media only screen and (max-width: 478px) {
+  .scrollDown {
+    width: 1rem;
+  }
+}

@@ -1,27 +1,16 @@
 // NextJS/React
 import { useEffect, useState, useRef } from 'react';
-import Head from 'next/head';
 
 // NPM Modules
 import ReactFullpage from '@fullpage/react-fullpage';
 import cn from 'classnames';
-import Lottie from 'lottie-react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { firestore } from '../../firebase/clientApp';
-import {
-  collection,
-  QueryDocumentSnapshot,
-  DocumentData,
-  query,
-  where,
-  limit,
-  getDocs,
-} from '@firebase/firestore';
-const passagesCollection = collection(firestore, 'passage');
+import { collection, query, where, limit, getDocs } from '@firebase/firestore';
 
 // Other Components & Utility Functions
 import BiblePassage from '../components/BiblePassage';
-import CopiedAlert from '../components/CopiedAlert';
+import ScrollDown from '../components/ScrollDown';
 import { shareOnFacebook, shareOnTwitter, shareOnInstagram } from '../utils/share';
 
 // Assets
@@ -30,22 +19,18 @@ import CloseIcon from '../../public/close-x.svg';
 import RightArrow from '../../public/right-arrow.svg';
 import NormalMethod from '../../public/normal-method-icon.svg';
 import FusionMethod from '../../public/fusion-method-icon.svg';
-import ScrollDownWhite from '../../public/scroll-down.json';
-import ScrollDownBlack from '../../public/scroll-down-black.json';
 import LinkShare from '../../public/share-link.svg';
 import TwitterShare from '../../public/share-twitter.svg';
 import FacebookShare from '../../public/share-facebook.svg';
 import InstagramShare from '../../public/share-instagram.svg';
 
 // Styles
-import styles from '../../styles/Home.module.css';
+import styles from '../../styles/Read.module.css';
 
-const Home = () => {
+const Home = ({ colorMode, setColorMode, onCopy, showMenuButton, setShowMenuButton }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [hideSettingsText, setHideSettingsText] = useState(false);
-  const [showCopyAlert, setShowCopyAlert] = useState(false);
   const [readingMethod, setReadingMethod] = useState('normal');
-  const [colorMode, setColorMode] = useState('dark');
   const [activeSection, setActiveSection] = useState();
   const [allowFullPageScrolling, setAllowFullPageScrolling] = useState(true);
   const [dailyPassage, setDailyPassage] = useState();
@@ -53,37 +38,29 @@ const Home = () => {
 
   // Retrieves daily passage from firestore
   const getDailyPassage = async () => {
-    const passageQuery = query(passagesCollection, limit(1));
-    const querySnapshot = await getDocs(passageQuery);
-    const result = [];
-    querySnapshot.forEach((snapshot) => {
-      result.push(snapshot._document.data.value.mapValue.fields);
-    });
-    setDailyPassage(result);
-  };
-
-  // Show copied to clipboard alert
-  const onCopy = () => {
-    setShowCopyAlert(true);
-    setTimeout(() => setShowCopyAlert(false), 2000);
+    const cachedPassage = sessionStorage.getItem('dailyPassage');
+    if (cachedPassage != null) {
+      setDailyPassage(JSON.parse(cachedPassage));
+    } else {
+      const passagesCollection = collection(firestore, 'passage');
+      const passageQuery = query(passagesCollection, limit(1), where('currentPassage', '==', true));
+      const querySnapshot = await getDocs(passageQuery);
+      const result = querySnapshot._snapshot.docChanges[0].doc.data.value.mapValue.fields;
+      setDailyPassage(result);
+      sessionStorage.setItem('dailyPassage', JSON.stringify(result));
+    }
   };
 
   const fullPageScrolling = (enable) => {
     setAllowFullPageScrolling(enable);
     fullpage_api.setAllowScrolling(enable);
-    fullpage_api.setKeyboardScrolling(enable);
   };
 
   // Component did mount
   useEffect(() => {
     getDailyPassage();
-    url.current = 'www.' + window.location.host;
+    url.current = window.location.host;
   }, []);
-
-  // Change color mode
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', colorMode);
-  }, [colorMode]);
 
   // Disable/enable scroll when leaving/entering normal reading section
   useEffect(() => {
@@ -103,40 +80,31 @@ const Home = () => {
     }
   }, [activeSection, readingMethod]);
 
-  // Hide settings text after the first section
+  // 1) Hide settings text after the first section
+  // 2) Hide menu button in the reading portion
   useEffect(() => {
     if (activeSection !== undefined) {
       if (activeSection === 0 && hideSettingsText) setHideSettingsText(false);
       if (activeSection !== 0 && !hideSettingsText) setHideSettingsText(true);
+      if (activeSection == 1 && showMenuButton) setShowMenuButton(false);
+      if (activeSection != 1 && !showMenuButton) setShowMenuButton(true);
     }
   }, [activeSection]);
 
   return (
     <>
-      <Head>
-        <title>Lightway</title>
-        <meta name="description" content="Lightway - Bible Reading Experience" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       {dailyPassage && (
         <>
           <div
             className={cn(styles.settingsHover, isSettingsOpen && styles.disappear)}
             onClick={() => setIsSettingsOpen(true)}
           >
-            <div
-              className={cn(
-                styles.settingsTextWrapper,
-                hideSettingsText && styles.settingsTextHide
-              )}
-            >
+            <div className={cn(styles.settingsTextWrapper, hideSettingsText && styles.settingsTextHide)}>
               <div className={styles.settingsText}>Settings</div>
               <RightArrow className={styles.rightArrow} />
             </div>
           </div>
-          <div
-            className={cn(styles.settingsWrapper, isSettingsOpen ? styles.settingsAppear : null)}
-          >
+          <div className={cn(styles.settingsWrapper, isSettingsOpen ? styles.settingsAppear : null)}>
             <div className={cn('button', 'round')} onClick={() => setIsSettingsOpen(false)}>
               Close
               <CloseIcon />
@@ -196,11 +164,10 @@ const Home = () => {
           </div>
           <ReactFullpage
             //fullpage options
-            licenseKey={'YOUR_KEY_HERE'}
-            scrollingSpeed={1000} /* Options here */
+            licenseKey={'1K657-9OWO9-KBVY6-RJO1I-TGMZM'}
+            scrollingSpeed={1000}
             scrollOverflow={true}
-            keyboardScrolling={true}
-            // anchors={["1", "2", "3", "4"]}
+            keyboardScrolling={false}
             normalScrollElements={'#normalWrapper'}
             onLeave={(origin, destination, direction, trigger) => {
               setActiveSection(destination.index);
@@ -208,52 +175,35 @@ const Home = () => {
             render={({ state, fullpageApi }) => {
               return (
                 <ReactFullpage.Wrapper>
-                  <div className={cn(styles.container, 'section', 'fp-noscroll', 'page-padding')}>
-                    <div className={styles.introWrapper}>
+                  <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
+                    <div className={'section-wrapper'}>
                       <div>
-                        <Logo className={styles.lightwayLogo} />
+                        <Logo className="lightwayLogo" />
                       </div>
                       <div className={styles.studyTitleWrapper}>
                         <div className="text-size-s">Todays Study</div>
-                        <div className="text-size-xl">{dailyPassage[0].title.stringValue}</div>
+                        <div className="text-size-xl">{dailyPassage.title.stringValue}</div>
                       </div>
-                      <div className={styles.scrollDownWrapper}>
-                        <div className={cn('text-size-xs', 'text-center')}>
-                          Scroll to begin study
-                        </div>
-                        <Lottie
-                          className={styles.scrollDown}
-                          loop={true}
-                          animationData={colorMode == 'dark' ? ScrollDownWhite : ScrollDownBlack}
-                        />
-                      </div>
+                      <ScrollDown text="Scroll to begin study" colorMode={colorMode} />
                     </div>
                   </div>
                   <div className={cn('section', styles.passageSection, 'fp-noscroll')}>
                     <BiblePassage
                       method={readingMethod}
-                      passage={dailyPassage[0].verses.stringValue}
+                      passage={dailyPassage.verses.stringValue}
                       allowFullPageScrolling={allowFullPageScrolling}
                       onCopy={onCopy}
                     />
                   </div>
-                  <div className={cn(styles.container, 'section', 'fp-noscroll', 'page-padding')}>
-                    <div className={styles.shareWrapper}>
+                  <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
+                    <div className={'section-wrapper'}>
                       <div></div>
-                      <div className={cn('text-size-l')}>
-                        {dailyPassage[0].question.stringValue}
-                      </div>
-                      <div className={styles.scrollDownWrapper}>
-                        <Lottie
-                          className={styles.scrollDown}
-                          loop={true}
-                          animationData={colorMode == 'dark' ? ScrollDownWhite : ScrollDownBlack}
-                        />
-                      </div>
+                      <div className={cn('text-size-l')}>{dailyPassage.question.stringValue}</div>
+                      <ScrollDown text="" colorMode={colorMode} />
                     </div>
                   </div>
-                  <div className={cn(styles.container, 'section', 'fp-noscroll', 'page-padding')}>
-                    <div className={cn(styles.shareWrapper)}>
+                  <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
+                    <div className={'section-wrapper'}>
                       <div className={cn(styles.shareTop, 'text-size-s', 'text-center')}>
                         Daily Growth from God’s Word.
                       </div>
@@ -276,9 +226,9 @@ const Home = () => {
                           </button>
                         </div>
                       </div>
-                      <div className={cn(styles.shareBottom, 'text-size-xs')}>
+                      <div>
                         <CopyToClipboard text={url.current} onCopy={onCopy}>
-                          <button className={cn('button', 'round')}>{url.current}</button>
+                          <button className={cn('button', 'round', 'text-size-xs')}>{url.current}</button>
                         </CopyToClipboard>
                       </div>
                     </div>
@@ -289,7 +239,6 @@ const Home = () => {
           />
         </>
       )}
-      <CopiedAlert visible={showCopyAlert} />
     </>
   );
 };

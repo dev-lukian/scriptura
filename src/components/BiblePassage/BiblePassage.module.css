@@ -1,6 +1,7 @@
 .normalWrapper {
-  overflow-y: hidden;
+  overflow-y: auto;
   scroll-behavior: smooth;
+  pointer-events: none;
   display: flex;
   flex-direction: column;
   padding-top: 50vh;
@@ -27,7 +28,7 @@
 .activeVerse {
   cursor: pointer;
   opacity: 1;
-  pointer-events: all;
+  pointer-events: none;
 }
 
 .fusionWrapper {
