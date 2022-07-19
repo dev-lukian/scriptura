@@ -69,7 +69,6 @@ const LifeIsShort = ({ colorMode }) => {
       const barProgress = ((labelMin - labelsWrapperOffset + labelDistanceIncrement) / labelsWrapperWidth) * 105;
       setRelativeBarProgress(barProgress.toString() + '%');
       setRelativeBarTransitionTime((Math.pow(age, 2) + 50) / 2 + 'ms');
-      console.log((Math.pow(age, 2) + 50) / 2 + 'ms');
     }
   }, [slidePause]);
 
@@ -186,7 +185,6 @@ const LifeIsShort = ({ colorMode }) => {
                       As you get older, years turn into months, months into weeks, and weeks pass by like days.
                     </div>
                     <div className={cn('width-100-percent', styles.yearAnimationWrapper)}>
-                      {/*luke*/}
                       <div className={styles.yearBar}>
                         <div
                           className={styles.activeYearBar}
@@ -194,9 +192,7 @@ const LifeIsShort = ({ colorMode }) => {
                             width: relativeBarProgress,
                             transitionDuration: relativeBarTransitionTime,
                           }}
-                        >
-                          {console.log(relativeBarTransitionTime.current)}
-                        </div>
+                        ></div>
                       </div>
                       <div ref={relativeLabelWrapper} className={styles.yearLabelWrapper}>
                         {[1, 10, 20, 30, 40, 50, 60, 70, 80].map((element, index) => {

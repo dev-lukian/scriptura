@@ -54,7 +54,7 @@ function MyApp({ Component, pageProps }) {
         <title>Scriptura</title>
         <meta name="description" content="Scriptura - Bible Reading Experience" />
         <link rel="icon" href="/favicon.ico" />
-
+        <meta name="twitter:card" content="/og-image.png" />
         <meta property="og:type" content="website" key="ogwebsite" />
         <meta property="og:image" content="/og-image.png" key="ogimage" />
         <meta property="og:site_name" content="Scriptura" key="ogsitename" />
