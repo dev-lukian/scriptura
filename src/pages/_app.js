@@ -45,7 +45,6 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     menuRef.current.setSpeed(3.5);
     url.current = window.location.host;
-    console.log(url.current + '/og-image.png');
   }, []);
 
   return (

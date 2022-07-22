@@ -195,10 +195,6 @@ Responsive Breakpoints
 
 /* Tablet */
 @media only screen and (max-width: 991px) {
-  .lightwayLogo {
-    transform: scale(0.9);
-  }
-
   .shareButtonsWrapper {
     grid-gap: 2rem;
   }
@@ -303,10 +299,6 @@ Responsive Breakpoints
 
 /* Mobile Vertical */
 @media only screen and (max-width: 478px) {
-  .lightwayLogo {
-    transform: scale(0.72);
-  }
-
   .shareButton {
     width: 8rem;
     height: 8rem;

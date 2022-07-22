@@ -4,7 +4,7 @@
   align-content: center;
   justify-content: center;
   position: fixed;
-  padding: 3rem 7rem;
+  padding: 2rem 4rem;
   z-index: 30;
 }
 
@@ -21,20 +21,20 @@
 /* Tablet */
 @media only screen and (max-width: 991px) {
   .menuHover {
-    padding: 2rem 4rem;
+    padding: 1rem 4rem;
   }
 }
 
 /* Mobile Horizontal */
 @media only screen and (max-width: 767px) {
   .menuHover {
-    padding: 1rem 3rem;
+    padding: 0.5rem 2rem;
   }
 }
 
 /* Mobile Vertical */
 @media only screen and (max-width: 478px) {
   .menuHover {
-    padding: 1rem 2rem;
+    padding: 0.5rem 1rem;
   }
 }
