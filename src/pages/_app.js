@@ -51,15 +51,11 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Scriptura</title>
-        <meta name="description" content="Scriptura - Bible Reading Experience" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="twitter:card" content="/og-image.png" />
         <meta property="og:type" content="website" key="ogwebsite" />
         <meta property="og:image" content="/og-image.png" key="ogimage" />
         <meta property="og:site_name" content="Scriptura" key="ogsitename" />
-        <meta property="og:title" content="Scriptura" key="ogtitle" />
-        <meta property="og:description" content="Bible Reading Experience" key="ogdesc" />
       </Head>
       <Menu showMenu={showMenu} handleMenuClick={handleMenuClick} onCopy={onCopy} />
       <div className={cn(styles.menuHover, !showMenuButton && styles.hidden)}>

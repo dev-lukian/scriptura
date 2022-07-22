@@ -1,6 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 // NextJS/React
 import { useEffect, useState, useRef } from 'react';
+import Head from 'next/head';
 
 // NPM Modules
 import ReactFullpage from '@fullpage/react-fullpage';
@@ -74,6 +75,16 @@ const LifeIsShort = ({ colorMode }) => {
 
   return (
     <>
+      <Head>
+        <title>Life is short | Scriptura</title>
+        <meta name="description" content="We all know life is short. But what can we take away from that fact?" />
+        <meta property="og:title" content="Life is short | Scriptura" key="ogtitle" />
+        <meta
+          property="og:description"
+          content="We all know life is short. But what can we take away from that fact?"
+          key="ogdesc"
+        />
+      </Head>
       <ReactFullpage
         //fullpage options
         licenseKey={'1K657-9OWO9-KBVY6-RJO1I-TGMZM'}

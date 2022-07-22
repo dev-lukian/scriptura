@@ -1,5 +1,6 @@
 // NextJS/React
 import { useEffect, useState, useRef } from 'react';
+import Head from 'next/head';
 
 // NPM Modules
 import ReactFullpage from '@fullpage/react-fullpage';
@@ -93,6 +94,12 @@ const Home = ({ colorMode, setColorMode, onCopy, showMenuButton, setShowMenuButt
 
   return (
     <>
+      <Head>
+        <title>Read Scripture | Scriptura</title>
+        <meta name="description" content="The new way to read Scripture daily" />
+        <meta property="og:title" content="Read Scripture | Scriptura" key="ogtitle" />
+        <meta property="og:description" content="The new way to read Scripture daily" key="ogdesc" />
+      </Head>
       {dailyPassage && (
         <>
           <div
