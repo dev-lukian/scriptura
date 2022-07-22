@@ -86,9 +86,13 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
   }, [slidePause]);
 
   useEffect(() => {
+    if (activeSection == 0) {
+      fullpage_api.setAllowScrolling(true, 'down');
+    }
+
     if (activeSection == 1) {
-      if (slideFreeze) fullpage_api.setAllowScrolling(false);
-      else fullpage_api.setAllowScrolling(true);
+      if (slideFreeze) fullpage_api.setAllowScrolling(false, 'down');
+      else fullpage_api.setAllowScrolling(true, 'down');
     }
   }, [slideFreeze, activeSection]);
 
