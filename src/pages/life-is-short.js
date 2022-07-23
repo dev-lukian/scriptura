@@ -26,6 +26,8 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
   const [slidePause, setSlidePause] = useState(false);
   const [slideFreeze, setSlideFreeze] = useState(false);
   const [ageAnimationProgress, setAgeAnimationProgress] = useState(0);
+  const [ageBarTransitionTime, setAgeBarTransitionTime] = useState('0ms');
+  const [ageBarProgress, setAgeBarProgress] = useState('0%');
   const [relativeAgeAnimationProgress, setRelativeAgeAnimationProgress] = useState(0);
   const [relativeBarTransitionTime, setRelativeBarTransitionTime] = useState('0ms');
   const [relativeBarProgress, setRelativeBarProgress] = useState('0%');
@@ -42,19 +44,22 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
   }, [age]);
 
   useEffect(() => {
-    if (activeSection == 2) {
+    if (activeSection == 1) {
+      setAgeAnimationProgress(0);
+      setAgeBarProgress('0%');
+      setAgeBarTransitionTime('0ms');
       setRelativeAgeAnimationProgress(0);
       setRelativeBarProgress('0%');
       setRelativeBarTransitionTime('0ms');
+    } else if (activeSection == 2) {
       if (age && !slidePause) {
         if (ageAnimationProgress < age) {
-          setTimeout(() => setAgeAnimationProgress((ageAnimationProgress) => ageAnimationProgress + 1), 25);
+          setTimeout(() => setAgeAnimationProgress((ageAnimationProgress) => ageAnimationProgress + 1), 50);
         }
       }
     } else if (activeSection == 3) {
       setAgeAnimationProgress(age);
       if (age && !slidePause) {
-        setAgeAnimationProgress(0);
         if (relativeAgeAnimationProgress < age) {
           setTimeout(
             () => setRelativeAgeAnimationProgress((relativeAgeAnimationProgress) => relativeAgeAnimationProgress + 1),
@@ -62,17 +67,17 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
           );
         }
       }
-    } else if (activeSection == 1) {
-      setRelativeAgeAnimationProgress(0);
-      setAgeAnimationProgress(0);
-      setRelativeBarProgress('0%');
-      setRelativeBarTransitionTime('0ms');
-    } else {
+    } else if (activeSection == 4) {
       setRelativeAgeAnimationProgress(age);
     }
   }, [activeSection, ageAnimationProgress, relativeAgeAnimationProgress, slidePause]);
 
   useEffect(() => {
+    if (activeSection == 2 && !slidePause && age) {
+      setAgeBarProgress((age / 80) * 100 + '%');
+      setAgeBarTransitionTime(50 * age + 'ms');
+    }
+
     if (activeSection == 3 && !slidePause && age) {
       const labelMax = relativeLabels.current[Math.ceil(age / 10)].offsetLeft;
       const labelMin = relativeLabels.current[Math.floor(age / 10)].offsetLeft;
@@ -180,8 +185,10 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
                         <div
                           className={styles.activeYearBar}
                           style={{
-                            width: (ageAnimationProgress / 80) * 100 + '%',
-                            transition: 'width' + age * 30 + 'ms linear',
+                            width: ageBarProgress,
+                            transitionDuration: ageBarTransitionTime,
+                            transitionProperty: 'width',
+                            transitionTimingFunction: 'linear',
                           }}
                         ></div>
                       </div>
@@ -274,11 +281,8 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
                       God’s given you one life, don’t waste it.
                     </div>
                     <div className={cn('text-size-s', styles.jamesVerseWrapper)}>
-                      <div>
-                        “For God so loved the world, that he gave his one and only Son, that whoever believes in him
-                        should not perish, but have eternal life.”
-                      </div>
-                      <div>John 3:16</div>
+                      <div>“The world is passing away with its lusts, but he who does God's will remains forever.”</div>
+                      <div>1 John 2:17</div>
                     </div>
                   </div>
                   <ScrollDown text="Spread the word" colorMode={colorMode} />
@@ -290,7 +294,7 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
                     <Logo className="lightwayLogo" />
                   </div>
                   <div className={styles.shareMiddle}>
-                    <div className={cn('text-size-l', 'text-center')}>Share the Gospel.</div>
+                    <div className={cn('text-size-l', 'text-center')}>Spread the Word.</div>
                     <div className={styles.shareButtonsWrapper}>
                       <CopyToClipboard text={url.current} onCopy={onCopy}>
                         <button className={styles.shareButton}>
