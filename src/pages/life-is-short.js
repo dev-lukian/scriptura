@@ -252,7 +252,7 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
                                 'text-size-s',
                                 relativeAgeAnimationProgress >= element && styles.activeYearLabel
                               )}
-                              style={{ paddingRight: Math.pow(80 - element, 2) / 400 + '%' }}
+                              style={{ paddingRight: (80 - element) / 7 + '%' }}
                               key={index}
                               ref={(label) => (relativeLabels.current[index] = label)}
                             >
