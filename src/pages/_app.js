@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/inline-script-id */
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
+import Script from 'next/script';
 
 import '../../styles/globals.css';
 import '../../public/fonts/style.css';
@@ -45,21 +47,32 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     menuRef.current.setSpeed(3.5);
     url.current = window.location.host;
-    console.log(url.current + '/og-image.png');
   }, []);
 
   return (
     <>
+      <Script
+        strategy="lazyOnload"
+        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
+      />
+
+      <Script strategy="lazyOnload">
+        {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}', {
+        page_path: window.location.pathname,
+        });
+    `}
+      </Script>
+
       <Head>
-        <title>Scriptura</title>
-        <meta name="description" content="Scriptura - Bible Reading Experience" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="twitter:card" content="/og-image.png" />
         <meta property="og:type" content="website" key="ogwebsite" />
         <meta property="og:image" content="/og-image.png" key="ogimage" />
         <meta property="og:site_name" content="Scriptura" key="ogsitename" />
-        <meta property="og:title" content="Scriptura" key="ogtitle" />
-        <meta property="og:description" content="Bible Reading Experience" key="ogdesc" />
       </Head>
       <Menu showMenu={showMenu} handleMenuClick={handleMenuClick} onCopy={onCopy} />
       <div className={cn(styles.menuHover, !showMenuButton && styles.hidden)}>

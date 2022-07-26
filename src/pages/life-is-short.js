@@ -1,47 +1,65 @@
 /* eslint-disable react/no-unescaped-entities */
 // NextJS/React
 import { useEffect, useState, useRef } from 'react';
+import Head from 'next/head';
 
 // NPM Modules
 import ReactFullpage from '@fullpage/react-fullpage';
 import cn from 'classnames';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+
+import ScrollDown from '../components/ScrollDown';
+import { shareOnFacebook, shareOnTwitter, shareOnInstagram } from '../utils/share';
 
 import Logo from '../../public/logo.svg';
-import ScrollDown from '../components/ScrollDown';
+import LinkShare from '../../public/share-link.svg';
+import TwitterShare from '../../public/share-twitter.svg';
+import FacebookShare from '../../public/share-facebook.svg';
+import InstagramShare from '../../public/share-instagram.svg';
 
 // Styles
 import styles from '../../styles/LifeIsShort.module.css';
 
-const LifeIsShort = ({ colorMode }) => {
+const LifeIsShort = ({ colorMode, onCopy }) => {
   const [age, setAge] = useState();
   const [activeSection, setActiveSection] = useState();
-  const [ageAnimationProgress, setAgeAnimationProgress] = useState(0);
-  const [relativeAgeAnimationProgress, setRelativeAgeAnimationProgress] = useState(0);
   const [slidePause, setSlidePause] = useState(false);
+  const [slideFreeze, setSlideFreeze] = useState(false);
+  const [ageAnimationProgress, setAgeAnimationProgress] = useState(0);
+  const [ageBarTransitionTime, setAgeBarTransitionTime] = useState('0ms');
+  const [ageBarProgress, setAgeBarProgress] = useState('0%');
+  const [relativeAgeAnimationProgress, setRelativeAgeAnimationProgress] = useState(0);
   const [relativeBarTransitionTime, setRelativeBarTransitionTime] = useState('0ms');
   const [relativeBarProgress, setRelativeBarProgress] = useState('0%');
   const relativeLabels = useRef(new Array());
   const relativeLabelWrapper = useRef();
+  const url = useRef();
 
   useEffect(() => {
     if (age > 80) setAge(80);
     else if (age < 0) setAge(0);
+
+    if (age) setSlideFreeze(false);
+    else setSlideFreeze(true);
   }, [age]);
 
   useEffect(() => {
-    if (activeSection == 2) {
+    if (activeSection == 1) {
+      setAgeAnimationProgress(0);
+      setAgeBarProgress('0%');
+      setAgeBarTransitionTime('0ms');
       setRelativeAgeAnimationProgress(0);
       setRelativeBarProgress('0%');
       setRelativeBarTransitionTime('0ms');
+    } else if (activeSection == 2) {
       if (age && !slidePause) {
         if (ageAnimationProgress < age) {
-          setTimeout(() => setAgeAnimationProgress((ageAnimationProgress) => ageAnimationProgress + 1), 75);
+          setTimeout(() => setAgeAnimationProgress((ageAnimationProgress) => ageAnimationProgress + 1), 45);
         }
       }
     } else if (activeSection == 3) {
       setAgeAnimationProgress(age);
       if (age && !slidePause) {
-        setAgeAnimationProgress(0);
         if (relativeAgeAnimationProgress < age) {
           setTimeout(
             () => setRelativeAgeAnimationProgress((relativeAgeAnimationProgress) => relativeAgeAnimationProgress + 1),
@@ -49,17 +67,17 @@ const LifeIsShort = ({ colorMode }) => {
           );
         }
       }
-    } else if (activeSection == 1) {
-      setRelativeAgeAnimationProgress(0);
-      setAgeAnimationProgress(0);
-      setRelativeBarProgress('0%');
-      setRelativeBarTransitionTime('0ms');
-    } else {
+    } else if (activeSection == 4) {
       setRelativeAgeAnimationProgress(age);
     }
   }, [activeSection, ageAnimationProgress, relativeAgeAnimationProgress, slidePause]);
 
   useEffect(() => {
+    if (activeSection == 2 && !slidePause && age) {
+      setAgeBarProgress((age / 80) * 100 + '%');
+      setAgeBarTransitionTime(50 * age + 'ms');
+    }
+
     if (activeSection == 3 && !slidePause && age) {
       const labelMax = relativeLabels.current[Math.ceil(age / 10)].offsetLeft;
       const labelMin = relativeLabels.current[Math.floor(age / 10)].offsetLeft;
@@ -72,8 +90,33 @@ const LifeIsShort = ({ colorMode }) => {
     }
   }, [slidePause]);
 
+  useEffect(() => {
+    if (activeSection == 0) {
+      fullpage_api.setAllowScrolling(true, 'down');
+    }
+
+    if (activeSection == 1) {
+      if (slideFreeze) fullpage_api.setAllowScrolling(false, 'down');
+      else fullpage_api.setAllowScrolling(true, 'down');
+    }
+  }, [slideFreeze, activeSection]);
+
+  useEffect(() => {
+    url.current = window.location.host;
+  }, []);
+
   return (
     <>
+      <Head>
+        <title>Life is short | Scriptura</title>
+        <meta name="description" content="We all know life is short. But what can we take away from that fact?" />
+        <meta property="og:title" content="Life is short | Scriptura" key="ogtitle" />
+        <meta
+          property="og:description"
+          content="We all know life is short. But what can we take away from that fact?"
+          key="ogdesc"
+        />
+      </Head>
       <ReactFullpage
         //fullpage options
         licenseKey={'1K657-9OWO9-KBVY6-RJO1I-TGMZM'}
@@ -94,7 +137,7 @@ const LifeIsShort = ({ colorMode }) => {
                     <Logo className="lightwayLogo" />
                   </div>
                   <div className={cn('flex-center', 'flex-column', 'text-center')}>
-                    <div className="text-size-l">Life is short</div>
+                    <div className="text-size-l">We all know life is short.</div>
                     <div className={cn('text-size-s', styles.jamesVerseWrapper)}>
                       <div>“You are just a vapor that appears for a little while and then vanishes away.”</div>
                       <div>James 4:14 </div>
@@ -108,7 +151,7 @@ const LifeIsShort = ({ colorMode }) => {
                   <div></div>
                   <div className={cn('flex-center', 'flex-column', 'text-center', styles.ageWrapper)}>
                     <div className={cn('text-size-m', styles.visualizeText)}>
-                      Visualize the time you have left based on average lifespan.
+                      But just how short is it really? Enter your age to find out.
                     </div>
                     <form className={cn('flex-center', 'flex-column', styles.ageInputWrapper)}>
                       <input
@@ -125,7 +168,7 @@ const LifeIsShort = ({ colorMode }) => {
                     </form>
                   </div>
                   <div className={cn(styles.scrollDownTransition, age ? styles.visible : styles.hidden)}>
-                    <ScrollDown text="Let’s find out" colorMode={colorMode} />
+                    <ScrollDown text="Let’s see it." colorMode={colorMode} />
                   </div>
                 </div>
               </div>
@@ -134,21 +177,22 @@ const LifeIsShort = ({ colorMode }) => {
                   <div></div>
                   <div className={cn('flex-center', 'flex-column', 'text-center', 'width-100-percent')}>
                     <div className={cn('text-size-m', styles.doYouThinkText)}>
-                      Do you think this is the time you have left?
+                      Here’s where you’re at compared to the average human lifespan.
                     </div>
                     <div className="text-size-s">The average lifespan is 76.8 years.</div>
                     <div className={cn('width-100-percent', styles.yearAnimationWrapper)}>
-                      <div className={styles.yearTicWrapper}>
-                        {[...Array(80).keys()].map((element, index) => {
-                          return (
-                            <div
-                              className={cn(styles.yearTic, ageAnimationProgress > index && styles.activeYearTic)}
-                              key={index}
-                            ></div>
-                          );
-                        })}
+                      <div className={styles.yearBar}>
+                        <div
+                          className={styles.activeYearBar}
+                          style={{
+                            width: ageBarProgress,
+                            transitionDuration: ageBarTransitionTime,
+                            transitionProperty: 'width',
+                            transitionTimingFunction: 'linear',
+                          }}
+                        ></div>
                       </div>
-                      <div className={styles.yearLabelWrapper}>
+                      <div ref={relativeLabelWrapper} className={styles.yearLabelWrapper}>
                         {[1, 10, 20, 30, 40, 50, 60, 70, 80].map((element, index) => {
                           return (
                             <div
@@ -180,9 +224,12 @@ const LifeIsShort = ({ colorMode }) => {
                 <div className="section-wrapper">
                   <div></div>
                   <div className={cn('flex-center', 'flex-column', 'text-center', 'width-100-percent')}>
-                    <div className="text-size-m">Time is relative</div>
+                    <div className="text-size-m">But really, it’s more like this.</div>
                     <div className={cn('text-size-s', styles.asYouGetOlderText)}>
-                      As you get older, years turn into months, months into weeks, and weeks pass by like days.
+                      As you get older, years turn into months, months turn into weeks, and weeks pass by just like
+                      days. <br />
+                      <br />
+                      You never have as much as you think.
                     </div>
                     <div className={cn('width-100-percent', styles.yearAnimationWrapper)}>
                       <div className={styles.yearBar}>
@@ -191,6 +238,8 @@ const LifeIsShort = ({ colorMode }) => {
                           style={{
                             width: relativeBarProgress,
                             transitionDuration: relativeBarTransitionTime,
+                            transitionProperty: 'width',
+                            transitionTimingFunction: 'ease-in',
                           }}
                         ></div>
                       </div>
@@ -220,26 +269,54 @@ const LifeIsShort = ({ colorMode }) => {
                       age == relativeAgeAnimationProgress ? styles.visible : styles.hidden
                     )}
                   >
-                    <ScrollDown text="Why does understanding this matter?" colorMode={colorMode} />
+                    <ScrollDown text="What can you do about it?" colorMode={colorMode} />
                   </div>
                 </div>
               </div>
               <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
                 <div className="section-wrapper">
+                  <div></div>
+                  <div className={cn('flex-center', 'flex-column', 'text-center')}>
+                    <div className={cn('text-size-l', styles.dontWasteItText)}>
+                      God’s given you one life, don’t waste it.
+                    </div>
+                    <div className={cn('text-size-s', styles.jamesVerseWrapper)}>
+                      <div>“The world is passing away with its lusts, but he who does God's will remains forever.”</div>
+                      <div>1 John 2:17</div>
+                    </div>
+                  </div>
+                  <ScrollDown text="Spread the word" colorMode={colorMode} />
+                </div>
+              </div>
+              <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>
+                <div className={'section-wrapper'}>
                   <div>
                     <Logo className="lightwayLogo" />
                   </div>
-                  <div className={cn('flex-center', 'flex-column', 'text-center')}>
-                    <div className={cn('text-size-l', styles.dontWasteItText)}>Life is short, don't waste it.</div>
-                    <div className={cn('text-size-s', styles.jamesVerseWrapper)}>
-                      <div>
-                        "Yet you do not know what tomorrow will bring. What is your life? For you are a mist that
-                        appears for a little time and then vanishes."
-                      </div>
-                      <div>James 4:14</div>
+                  <div className={styles.shareMiddle}>
+                    <div className={cn('text-size-l', 'text-center')}>Spread the Word.</div>
+                    <div className={styles.shareButtonsWrapper}>
+                      <CopyToClipboard text={url.current} onCopy={onCopy}>
+                        <button className={styles.shareButton}>
+                          <LinkShare className={styles.shareIcon} />
+                        </button>
+                      </CopyToClipboard>
+                      <button className={styles.shareButton} onClick={shareOnTwitter}>
+                        <TwitterShare />
+                      </button>
+                      <button className={styles.shareButton} onClick={shareOnFacebook}>
+                        <FacebookShare />
+                      </button>
+                      <button className={styles.shareButton} onClick={shareOnInstagram}>
+                        <InstagramShare />
+                      </button>
                     </div>
                   </div>
-                  <div></div>
+                  <div>
+                    <CopyToClipboard text={url.current} onCopy={onCopy}>
+                      <button className={cn('button', 'round', 'text-size-xs')}>{url.current}</button>
+                    </CopyToClipboard>
+                  </div>
                 </div>
               </div>
             </ReactFullpage.Wrapper>
