@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 // NextJS/React
 import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
@@ -188,7 +189,7 @@ const Home = ({ colorMode, setColorMode, onCopy, showMenuButton, setShowMenuButt
                         <Logo className="lightwayLogo" />
                       </div>
                       <div className={styles.studyTitleWrapper}>
-                        <div className="text-size-s">Todays Study</div>
+                        <div className="text-size-s">Today's Study</div>
                         <div className="text-size-xl">{dailyPassage.title.stringValue}</div>
                       </div>
                       <ScrollDown text="Scroll to begin study" colorMode={colorMode} />
