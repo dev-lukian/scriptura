@@ -54,7 +54,7 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
     } else if (activeSection == 2) {
       if (age && !slidePause) {
         if (ageAnimationProgress < age) {
-          setTimeout(() => setAgeAnimationProgress((ageAnimationProgress) => ageAnimationProgress + 1), 50);
+          setTimeout(() => setAgeAnimationProgress((ageAnimationProgress) => ageAnimationProgress + 1), 45);
         }
       }
     } else if (activeSection == 3) {
@@ -252,7 +252,7 @@ const LifeIsShort = ({ colorMode, onCopy }) => {
                                 'text-size-s',
                                 relativeAgeAnimationProgress >= element && styles.activeYearLabel
                               )}
-                              style={{ paddingRight: (80 - element) / 7 + '%' }}
+                              style={{ paddingRight: Math.pow(80 - element, 2) / 400 + '%' }}
                               key={index}
                               ref={(label) => (relativeLabels.current[index] = label)}
                             >
