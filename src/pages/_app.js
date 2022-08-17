@@ -31,8 +31,8 @@ function MyApp({ Component, pageProps }) {
 
   // Play menu lottie animation and make menu appear
   const handleMenuClick = () => {
-    if (!showMenu) menuRef.current.playSegments([0, 20], true);
-    else menuRef.current.playSegments([20, 0], true);
+    if (!showMenu) menuRef.current.playSegments([0, 50], true);
+    else menuRef.current.playSegments([50, 0], true);
     setShowMenu(!showMenu);
   };
 
