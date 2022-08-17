@@ -282,7 +282,9 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy, activeS
               </div>
             </div>
           )}
-      <div className={styles.translationDisclaimer}>World English Bible (WEB) Translation</div>
+      <div className={styles.translationDisclaimerWrapper}>
+        <span className={styles.translationDisclaimer}>World English Bible (WEB) Translation</span>
+      </div>
     </>
   );
 };
