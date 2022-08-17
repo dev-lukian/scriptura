@@ -4,7 +4,7 @@ import Head from 'next/head';
 
 import '../../styles/globals.css';
 import '../../public/fonts/style.css';
-import styles from '../../styles/Home.module.css';
+import styles from '../../styles/App.module.css';
 
 import Lottie from 'lottie-react';
 import cn from 'classnames';
@@ -18,7 +18,7 @@ import CopiedAlert from '../components/CopiedAlert';
 
 function MyApp({ Component, pageProps }) {
   const [colorMode, setColorMode] = useState('dark');
-  const [showMenuButton, setShowMenuButton] = useState(true);
+  const [showSideControls, setShowSideControls] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [showCopyAlert, setShowCopyAlert] = useState(false);
   const menuRef = useRef();
@@ -44,7 +44,7 @@ function MyApp({ Component, pageProps }) {
 
   // Increase speed of menu lottie
   useEffect(() => {
-    menuRef.current.setSpeed(3.5);
+    menuRef.current.setSpeed(4);
     url.current = window.location.host;
   }, []);
 
@@ -58,24 +58,26 @@ function MyApp({ Component, pageProps }) {
         <meta property="og:site_name" content="Scriptura" key="ogsitename" />
       </Head>
       <Menu showMenu={showMenu} handleMenuClick={handleMenuClick} onCopy={onCopy} />
-      <div className={cn(styles.menuHover, !showMenuButton && styles.hidden)}>
-        <button className={cn('button', 'circle')} onClick={handleMenuClick}>
-          <Lottie
-            className={cn(styles.menuButtonLottie)}
-            lottieRef={menuRef}
-            loop={false}
-            autoplay={false}
-            animationData={colorMode == 'dark' ? MenuHamburgerWhite : MenuHamburgerBlack}
-          />
-        </button>
-      </div>
+      {showSideControls && (
+        <div className={cn(styles.menuHover)}>
+          <button className={cn('button', 'circle')} onClick={handleMenuClick}>
+            <Lottie
+              className={cn(styles.menuButtonLottie)}
+              lottieRef={menuRef}
+              loop={false}
+              autoplay={false}
+              animationData={colorMode == 'dark' ? MenuHamburgerWhite : MenuHamburgerBlack}
+            />
+          </button>
+        </div>
+      )}
       <Component
         {...pageProps}
         colorMode={colorMode}
         setColorMode={setColorMode}
         onCopy={onCopy}
-        showMenuButton={showMenuButton}
-        setShowMenuButton={setShowMenuButton}
+        showSideControls={showSideControls}
+        setShowSideControls={setShowSideControls}
       />
       <CopiedAlert visible={showCopyAlert} />
     </>

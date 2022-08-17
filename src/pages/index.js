@@ -13,6 +13,7 @@ import { collection, query, where, limit, getDocs } from '@firebase/firestore';
 // Other Components & Utility Functions
 import BiblePassage from '../components/BiblePassage';
 import ScrollDown from '../components/ScrollDown';
+import SectionNavigation from '../components/SectionNavigation';
 import { shareOnFacebook, shareOnTwitter, shareOnInstagram } from '../utils/share';
 
 // Assets
@@ -27,11 +28,12 @@ import FacebookShare from '../../public/share-facebook.svg';
 import InstagramShare from '../../public/share-instagram.svg';
 
 // Styles
-import styles from '../../styles/Read.module.css';
+import styles from '../../styles/Index.module.css';
 
-const Home = ({ colorMode, setColorMode, onCopy, showMenuButton, setShowMenuButton }) => {
+const sections = ['Introduction', 'Read', 'Question', 'Share'];
+
+const Home = ({ colorMode, setColorMode, onCopy, showSideControls, setShowSideControls }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [hideSettingsText, setHideSettingsText] = useState(false);
   const [readingMethod, setReadingMethod] = useState('normal');
   const [activeSection, setActiveSection] = useState();
   const [allowFullPageScrolling, setAllowFullPageScrolling] = useState(true);
@@ -86,10 +88,8 @@ const Home = ({ colorMode, setColorMode, onCopy, showMenuButton, setShowMenuButt
   // 2) Hide menu button in the reading portion
   useEffect(() => {
     if (activeSection !== undefined) {
-      if (activeSection === 0 && hideSettingsText) setHideSettingsText(false);
-      if (activeSection !== 0 && !hideSettingsText) setHideSettingsText(true);
-      if (activeSection == 1 && showMenuButton) setShowMenuButton(false);
-      if (activeSection != 1 && !showMenuButton) setShowMenuButton(true);
+      if (activeSection === 1 && showSideControls) setShowSideControls(false);
+      if (activeSection !== 1 && !showSideControls) setShowSideControls(true);
     }
   }, [activeSection]);
 
@@ -103,15 +103,17 @@ const Home = ({ colorMode, setColorMode, onCopy, showMenuButton, setShowMenuButt
       </Head>
       {dailyPassage && (
         <>
+          {showSideControls && <SectionNavigation sections={sections} activeSection={activeSection} />}
           <div
             className={cn(styles.settingsHover, isSettingsOpen && styles.disappear)}
             onClick={() => setIsSettingsOpen(true)}
           >
-            <div className={cn(styles.settingsTextWrapper, hideSettingsText && styles.settingsTextHide)}>
+            <div className={cn(styles.settingsTextWrapper, !showSideControls && styles.settingsTextHide)}>
               <div className={styles.settingsText}>Settings</div>
               <RightArrow className={styles.rightArrow} />
             </div>
           </div>
+
           <div className={cn(styles.settingsWrapper, isSettingsOpen ? styles.settingsAppear : null)}>
             <div className={cn('button', 'round')} onClick={() => setIsSettingsOpen(false)}>
               Close

@@ -1,0 +1,62 @@
+.sectionNavigationWrapper {
+  position: fixed;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.5rem;
+  left: 0%;
+  height: 100vh;
+  padding: 2.5rem 1rem;
+}
+
+.sectionNavigationButtonWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sectionNavigationButton {
+  width: 0.8rem;
+  height: 0.8rem;
+  background-color: var(--light-50-color);
+  border-radius: 100%;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.activeSectionNavigationButton {
+  transform: scale(1.2);
+  background-color: var(--font-color);
+}
+
+.sectionNavigationText {
+  position: absolute;
+  left: 1.2rem;
+  background-color: var(--light-10-color);
+  border-radius: 5rem;
+  padding: 0.4rem 1rem;
+}
+
+/* Tablet */
+@media only screen and (max-width: 991px) {
+  .sectionNavigationWrapper {
+    padding: 1.5rem 0.5rem;
+  }
+}
+
+/* Mobile Horizontal */
+@media only screen and (max-width: 767px) {
+  .sectionNavigationWrapper {
+    padding: 0.5rem 0.5rem;
+  }
+}
+
+/* Mobile Vertical */
+@media only screen and (max-width: 478px) {
+  .sectionNavigationWrapper {
+    padding: 0.5rem 0.5rem;
+  }
+}

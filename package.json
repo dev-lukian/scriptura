@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fullpage/react-fullpage": "^0.1.26",
+    "@fullpage/react-fullpage": "^0.1.27",
     "@svgr/webpack": "^6.2.1",
     "bowser": "^2.11.0",
     "classnames": "^2.3.1",
