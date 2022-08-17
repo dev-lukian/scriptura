@@ -46,6 +46,20 @@
   column-gap: 5rem;
 }
 
+.fusionMoveButtonsWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.restartButton {
+  transform: scaleX(-1);
+}
+
+.restartButtonFlipped {
+  transform: scaleX(-1);
+}
+
 .translationDisclaimerWrapper {
   position: absolute;
   transform: translateX(-50%);
@@ -62,6 +76,7 @@
   font-size: 0.6rem;
   color: var(--font-color);
   opacity: 0.3;
+  white-space: nowrap;
 }
 
 /* 

@@ -11,7 +11,6 @@ import cn from 'classnames';
 
 import MenuHamburgerWhite from '../../public/menu.json';
 import MenuHamburgerBlack from '../../public/menu-black.json';
-import previewImage from '../../public/og-image.png';
 
 import Menu from '../components/Menu';
 import CopiedAlert from '../components/CopiedAlert';
@@ -32,8 +31,8 @@ function MyApp({ Component, pageProps }) {
 
   // Play menu lottie animation and make menu appear
   const handleMenuClick = () => {
-    if (!showMenu) menuRef.current.playSegments([0, 50], true);
-    else menuRef.current.playSegments([50, 0], true);
+    if (!showMenu) menuRef.current.playSegments([0, 20], true);
+    else menuRef.current.playSegments([20, 0], true);
     setShowMenu(!showMenu);
   };
 
@@ -44,7 +43,6 @@ function MyApp({ Component, pageProps }) {
 
   // Increase speed of menu lottie
   useEffect(() => {
-    menuRef.current.setSpeed(4);
     url.current = window.location.host;
   }, []);
 
@@ -66,6 +64,7 @@ function MyApp({ Component, pageProps }) {
               lottieRef={menuRef}
               loop={false}
               autoplay={false}
+              setSpeed={4}
               animationData={colorMode == 'dark' ? MenuHamburgerWhite : MenuHamburgerBlack}
             />
           </button>

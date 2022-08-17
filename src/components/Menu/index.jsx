@@ -14,8 +14,8 @@ const Menu = ({ showMenu, handleMenuClick, onCopy }) => {
   const router = useRouter();
 
   const switchPages = (path) => {
-    handleMenuClick();
     router.push(path);
+    handleMenuClick();
     fullpage_api.silentMoveTo(1);
   };
 

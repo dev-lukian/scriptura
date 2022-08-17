@@ -12,6 +12,7 @@ import Bowser from 'bowser';
 // Assets
 import ArrowBack from '../../../public/fusion-back.svg';
 import ArrowForward from '../../../public/fusion-forward.svg';
+import Restart from '../../../public/restart.svg';
 
 // Styles
 import styles from './BiblePassage.module.css';
@@ -113,6 +114,13 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy, activeS
     } else {
       setFusionProgress((fusionProgress) => Math.max(fusionProgress - 10, 0));
     }
+  };
+
+  const restart = (beginning) => {
+    setFusionPlay(false);
+
+    if (beginning) setFusionProgress(0);
+    else setFusionProgress(fusionPassage.length - 1);
   };
 
   // Triggers fusion player to start playing when changing to fusion mode
@@ -262,23 +270,39 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy, activeS
             <div className={styles.fusionWrapper}>
               <div className="text-size-xl">{fusionPassage[fusionProgress]}</div>
               <div className={cn(styles.fusionButtonsWrapper, 'text-size-s')}>
-                <button
-                  className={cn('button', 'light-button', 'round', 'text-size-s')}
-                  onClick={() => skipWords(false)}
-                >
-                  <ArrowBack />
-                  10
-                </button>
+                <div className={styles.fusionMoveButtonsWrapper}>
+                  <button
+                    className={cn('button', 'light-button', 'round', 'text-size-s', styles.restartButton)}
+                    onClick={() => restart(true)}
+                  >
+                    <Restart />
+                  </button>
+                  <button
+                    className={cn('button', 'light-button', 'round', 'text-size-s')}
+                    onClick={() => skipWords(false)}
+                  >
+                    <ArrowBack />
+                    10
+                  </button>
+                </div>
                 <button className={cn('button', 'round', 'text-size-s')} onClick={toggleResume}>
                   {fusionPlay ? 'Pause' : 'Resume'}
                 </button>
-                <button
-                  className={cn('button', 'light-button', 'round', 'text-size-s')}
-                  onClick={() => skipWords(true)}
-                >
-                  10
-                  <ArrowForward />
-                </button>
+                <div className={styles.fusionMoveButtonsWrapper}>
+                  <button
+                    className={cn('button', 'light-button', 'round', 'text-size-s')}
+                    onClick={() => skipWords(true)}
+                  >
+                    10
+                    <ArrowForward />
+                  </button>
+                  <button
+                    className={cn('button', 'light-button', 'round', 'text-size-s')}
+                    onClick={() => restart(false)}
+                  >
+                    <Restart />
+                  </button>
+                </div>
               </div>
             </div>
           )}
