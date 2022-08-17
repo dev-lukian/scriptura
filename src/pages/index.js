@@ -203,6 +203,7 @@ const Home = ({ colorMode, setColorMode, onCopy, showSideControls, setShowSideCo
                       passage={dailyPassage.verses.stringValue}
                       allowFullPageScrolling={allowFullPageScrolling}
                       onCopy={onCopy}
+                      activeSection={activeSection}
                     />
                   </div>
                   <div className={cn('container', 'section', 'fp-noscroll', 'page-padding')}>

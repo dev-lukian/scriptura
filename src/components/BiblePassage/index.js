@@ -16,7 +16,7 @@ import ArrowForward from '../../../public/fusion-forward.svg';
 // Styles
 import styles from './BiblePassage.module.css';
 
-const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
+const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy, activeSection }) => {
   // Normal States/Refs
   const [normalPassage, setNormalPassage] = useState();
   const [activeVerse, setActiveVerse] = useState(0);
@@ -118,10 +118,18 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
   // Triggers fusion player to start playing when changing to fusion mode
   useEffect(() => {
     if (fusionPassage) {
-      if (method == 'fusion') setFusionPlay(true);
+      if (method == 'fusion') setTimeout(() => setFusionPlay(true), 900);
       else setFusionPlay(false);
     }
   }, [method]);
+
+  // Triggers fusion player to start playing when changing
+  useEffect(() => {
+    if (activeSection !== undefined) {
+      if (activeSection == 1 && method == 'fusion') setTimeout(() => setFusionPlay(true), 900);
+      else setFusionPlay(false);
+    }
+  }, [activeSection]);
 
   // Start fusion player
   useEffect(() => {
@@ -152,12 +160,18 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
     // Turning each line into its on element in an array
     const splitVerses = passage.split('\\n');
 
-    // Remove space, if present in beginning of verse
+    // Remove space(s), if present in beginning of verse and at the end of verse
     for (let i = 0; i < splitVerses.length; i++) {
-      if (splitVerses[i].charAt(0) == ' ') {
+      while (splitVerses[i].charAt(0) === ' ') {
         splitVerses[i] = splitVerses[i].substring(1);
       }
+
+      while (splitVerses[i].charAt(splitVerses[i].length - 1) === ' ') {
+        splitVerses[i] = splitVerses[i].substring(0, splitVerses[i].length - 1);
+      }
     }
+
+    console.log(splitVerses);
 
     // Removing verse numbers
     // for (let i = 0; i < splitVerses.length; i++) {
@@ -170,8 +184,6 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy }) => {
 
   // Preparing fusion method (each word pushed into an array)
   useEffect(() => {
-    fullpage_api.reBuild();
-
     if (normalPassage) {
       let fusion = [];
       let splitWords;
