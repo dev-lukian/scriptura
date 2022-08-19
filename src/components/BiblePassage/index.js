@@ -170,7 +170,7 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy, activeS
 
     // Remove space(s), if present in beginning of verse and at the end of verse
     for (let i = 0; i < splitVerses.length; i++) {
-      while (splitVerses[i].charAt(0) === ' ') {
+      while (splitVerses[i].charAt(0) === ' ' || splitVerses[i].charAt(0) === '\n') {
         splitVerses[i] = splitVerses[i].substring(1);
       }
 
@@ -187,6 +187,8 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy, activeS
     //   splitVerses[i] = splitVerses[i].substring(indexOfSpace + 1);
     // }
 
+    console.log(splitVerses);
+
     setNormalPassage(splitVerses);
   }, []);
 
@@ -200,6 +202,8 @@ const BiblePassage = ({ method, passage, allowFullPageScrolling, onCopy, activeS
         splitWords = normalPassage[i].split(' ');
         fusion = [...fusion, ...splitWords];
       }
+
+      console.log(fusion);
 
       setFusionPassage(fusion);
     }
